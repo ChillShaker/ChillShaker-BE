@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
-import com.ducnt.chillshaker.dto.request.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.AccountUpdationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -15,19 +15,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor

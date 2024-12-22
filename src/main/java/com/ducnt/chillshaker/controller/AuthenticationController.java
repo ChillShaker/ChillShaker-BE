@@ -1,6 +1,6 @@
 package com.ducnt.chillshaker.controller;
 
-import com.ducnt.chillshaker.dto.request.AuthenticationRequest;
+import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AuthenticationService;
 import lombok.AccessLevel;

@@ -1,6 +1,6 @@
 package com.ducnt.chillshaker.service.implement;
 
-import com.ducnt.chillshaker.dto.request.AuthenticationRequest;
+import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
 import com.ducnt.chillshaker.dto.response.authentication.AuthenticationResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.NotFoundException;
@@ -12,8 +12,6 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.sun.net.httpserver.HttpContext;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

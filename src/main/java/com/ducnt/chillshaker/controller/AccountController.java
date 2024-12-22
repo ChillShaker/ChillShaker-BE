@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
-import com.ducnt.chillshaker.dto.request.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.AccountUpdationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AccountService;
