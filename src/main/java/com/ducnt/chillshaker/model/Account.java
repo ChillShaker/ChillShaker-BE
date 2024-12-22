@@ -16,9 +16,6 @@ import java.util.HashSet;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class Account extends BaseModel{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
     String fullName;
     String email;
     String password;
