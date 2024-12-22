@@ -16,16 +16,16 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class AccountCreationRequest {
-    @Size(min = 3, max = 100, message = "FullName must be at range 3 to 100 character")
+    @Size(min = 4, message = "FULLNAME_INVALID")
     String fullName;
-    @Email
+    @Email(message = "EMAIL_INVALID")
     String email;
-    @Size(min = 6, message = "Password must be at least 6 character ")
+    @Size(min = 6, message = "PASSWORD_INVALID")
     String password;
-    @Pattern(regexp = "^(0|\\+84)([3|5|7|8|9])+([0-9]{8})\\b$")
+    @Pattern(regexp = "^(0|\\+84)([3|5|7|8|9])+([0-9]{8})\\b$", message = "PHONE_INVALID")
     String phone;
     @NotBlank(message = "Address must not be blank")
     String address;
-    @DobConstraint(min = 18)
+    @DobConstraint(min = 18, message = "DOB_INVALID")
     LocalDate dob;
 }
