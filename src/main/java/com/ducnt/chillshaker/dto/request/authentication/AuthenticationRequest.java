@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.dto.request;
+package com.ducnt.chillshaker.dto.request.authentication;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

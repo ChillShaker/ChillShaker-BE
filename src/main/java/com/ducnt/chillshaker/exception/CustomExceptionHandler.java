@@ -2,12 +2,10 @@ package com.ducnt.chillshaker.exception;
 
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
@@ -48,7 +46,7 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ApiResponse> handleCustomerException(CustomException e) {
+    public ResponseEntity<ApiResponse> handleCustomException(CustomException e) {
         ErrorResponse errorResponse = e.getErrorResponse();
         var response = ResponseEntity.status(errorResponse.getHttpStatusCode());
         return response.body(ApiResponse.builder().message(errorResponse.getMessage()).build());

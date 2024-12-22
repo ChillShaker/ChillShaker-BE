@@ -1,6 +1,6 @@
 package com.ducnt.chillshaker.config;
 
-import com.ducnt.chillshaker.dto.request.AccountCreationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
 import com.ducnt.chillshaker.model.Account;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
