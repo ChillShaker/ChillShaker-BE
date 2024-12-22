@@ -79,12 +79,6 @@ public class AccountService {
         modelMapper.map(request, account);
 
         account.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        if(!request.getRoles().isEmpty()) {
-            List<Role> roles = roleRepository.findAllByName(request.getRoles());
-
-            account.setRoles(roles);
-        }
         
         accountRepository.save(account);
         return modelMapper.map(account, AccountResponse.class);

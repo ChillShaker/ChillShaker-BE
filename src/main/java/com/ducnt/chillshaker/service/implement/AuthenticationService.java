@@ -3,6 +3,7 @@ package com.ducnt.chillshaker.service.implement;
 import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
 import com.ducnt.chillshaker.dto.response.authentication.AuthenticationResponse;
 import com.ducnt.chillshaker.exception.CustomException;
+import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.Account;
 import com.ducnt.chillshaker.model.Role;
@@ -45,7 +46,7 @@ public class AuthenticationService {
         PasswordEncoder bcrypt = new BCryptPasswordEncoder();
         boolean isAuthenticated = bcrypt.matches(request.getPassword(), account.getPassword());
         if (!isAuthenticated) {
-            throw new CustomException("Unauthenticated", HttpStatus.UNAUTHORIZED.value());
+            throw new CustomException(ErrorResponse.UNAUTHENTICATED);
         }
         var accessToken = generateToken(account);
         return AuthenticationResponse.builder().accessToken(accessToken).build();
