@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class AccountService {
                 .toList();
     }
 
-    public AccountResponse getAccountById(Long id) {
+    public AccountResponse getAccountById(UUID id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
         return modelMapper.map(account, AccountResponse.class);
     }
@@ -74,7 +75,7 @@ public class AccountService {
         return modelMapper.map(account, AccountResponse.class);
     }
 
-    public AccountResponse updateAccount(Long id, AccountUpdationRequest request) throws NoSuchAlgorithmException {
+    public AccountResponse updateAccount(UUID id, AccountUpdationRequest request) throws NoSuchAlgorithmException {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
         modelMapper.map(request, account);
 
@@ -84,7 +85,7 @@ public class AccountService {
         return modelMapper.map(account, AccountResponse.class);
     }
 
-    public boolean deleteAccount(Long id) throws Exception {
+    public boolean deleteAccount(UUID id) throws Exception {
         try {
             Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
             accountRepository.delete(account);

@@ -1,6 +1,7 @@
 package com.ducnt.chillshaker.config;
 
 import com.ducnt.chillshaker.model.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,10 +26,10 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {"/api/v1/accounts/myInfo", "/api/v1/log-in"};
+    private final String[] PUBLIC_ENDPOINTS = {"/api/v1/accounts/myInfo", "/api/v1/log-in", "/api/v1/log-out"};
 
-    @Value("${JWT_SIGNATURE_KEY}")
-    private String jwtSignatureKey;
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -38,7 +39,7 @@ public class SecurityConfig {
                 .authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> {
-            jwtConfigurer.decoder(jwtDecoder())
+            jwtConfigurer.decoder(customJwtDecoder)
                          .jwtAuthenticationConverter(jwtAuthenticationConverter());
         })
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
@@ -47,14 +48,6 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(jwtSignatureKey.getBytes(), "HS512");
-        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
     }
 
     @Bean
