@@ -23,7 +23,7 @@ public class CustomJwtDecoder implements JwtDecoder {
 
     private NimbusJwtDecoder nimbusJwtDecoder = null;
 
-    @Value("${JWT_SIGNATURE_KEY}")
+    @Value("${jwt.jwt-signature-key}")
     private String jwtSignatureKey;
 
     @Override
