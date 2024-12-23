@@ -12,5 +12,5 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class AuthenticationResponse {
     String accessToken;
-    String refreshToken = null;
+    String refreshToken;
 }
