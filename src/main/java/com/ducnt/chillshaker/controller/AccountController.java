@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
-import com.ducnt.chillshaker.dto.request.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.AccountUpdationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AccountService;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -26,7 +27,7 @@ public class AccountController {
     AccountService accountService;
 
     @GetMapping("/{id}")
-    public ApiResponse getAccountById(@PathVariable("id") Long id) {
+    public ApiResponse getAccountById(@PathVariable("id") UUID id) {
         AccountResponse accountResponse = accountService.getAccountById(id);
         return ApiResponse.builder()
                 .message("Data loaded successfully")
@@ -62,7 +63,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse updateAccount(@PathVariable("id") Long id, @RequestBody @Valid AccountUpdationRequest request) throws NoSuchAlgorithmException {
+    public ApiResponse updateAccount(@PathVariable("id") UUID id, @RequestBody @Valid AccountUpdationRequest request) throws NoSuchAlgorithmException {
         AccountResponse accountResponse = accountService.updateAccount(id, request);
         return ApiResponse.builder()
                 .message("Updated account successfully")
@@ -71,7 +72,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse deleteAccount(@PathVariable("id") Long id) throws Exception {
+    public ApiResponse deleteAccount(@PathVariable("id") UUID id) throws Exception {
         boolean result = accountService.deleteAccount(id);
         if (result) {
             return ApiResponse.builder().message("Deleted account successfully").build();

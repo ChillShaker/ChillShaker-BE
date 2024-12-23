@@ -10,6 +10,14 @@ import org.springframework.http.HttpStatusCode;
 @NoArgsConstructor
 @Getter
 public enum ErrorResponse {
+    /** ERROR RESPONSE FOR ACCOUNT **/
+    FULLNAME_INVALID("FullName must be at least {min} character ", HttpStatus.BAD_REQUEST),
+    PASSWORD_INVALID("Password must be at least {min} character ", HttpStatus.BAD_REQUEST),
+    DOB_INVALID("Date of birth muse be at least {min}", HttpStatus.BAD_REQUEST),
+    EMAIL_INVALID("Email must be a well-formed email address",  HttpStatus.BAD_REQUEST),
+    PHONE_INVALID("Phone number is not in Vietnamese syntax", HttpStatus.BAD_REQUEST),
+
+    /**COMMON ERROR RESPONSE**/
     DATA_EXISTED("Data is existed", HttpStatus.BAD_REQUEST),
     BAD_REQUEST("Invalid request", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED("Unauthenticated", HttpStatus.UNAUTHORIZED),

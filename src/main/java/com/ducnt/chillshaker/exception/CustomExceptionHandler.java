@@ -1,19 +1,25 @@
 package com.ducnt.chillshaker.exception;
 
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintViolation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestControllerAdvice
+@Slf4j
 public class CustomExceptionHandler {
+    private static final String MIN_ATTRIBUTE = "min";
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiResponse> handleNotFoundException(NotFoundException e) {
@@ -33,10 +39,35 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentConversionNotSupportedException(MethodArgumentNotValidException e) {
-        ErrorResponse badRequest = ErrorResponse.BAD_REQUEST;
+        ErrorResponse errorResponse = ErrorResponse.BAD_REQUEST;
 
-        return ResponseEntity.status(badRequest.getHttpStatusCode())
-                .body(ApiResponse.builder().message(Objects.requireNonNull(e.getFieldError()).getDefaultMessage()).build());
+        String enumKey = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
+
+        Map<String, Object> attributes = null;
+        try {
+            errorResponse = ErrorResponse.valueOf(enumKey);
+            Optional<ObjectError> objectError = e.getBindingResult().getAllErrors().stream().findFirst();
+            if(objectError.isPresent()) {
+                var constraintViolation = objectError.get().unwrap(ConstraintViolation.class);
+                attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+            }
+        } catch (IllegalArgumentException ex) {
+
+        }
+
+
+        return ResponseEntity.status(errorResponse.getHttpStatusCode())
+                .body(ApiResponse
+                        .builder()
+                        .message(Objects.nonNull(attributes) ? attributes(errorResponse.getMessage(), attributes)
+                                : Objects.requireNonNull(e.getFieldError()).getDefaultMessage())
+                        .build());
+    }
+
+    private String attributes(String message, Map<String, Object> attributes) {
+        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
+
+        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -48,7 +79,7 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ApiResponse> handleCustomerException(CustomException e) {
+    public ResponseEntity<ApiResponse> handleCustomException(CustomException e) {
         ErrorResponse errorResponse = e.getErrorResponse();
         var response = ResponseEntity.status(errorResponse.getHttpStatusCode());
         return response.body(ApiResponse.builder().message(errorResponse.getMessage()).build());

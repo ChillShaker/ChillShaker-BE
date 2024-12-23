@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
-import com.ducnt.chillshaker.dto.request.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.AccountUpdationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -15,19 +15,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +44,7 @@ public class AccountService {
                 .toList();
     }
 
-    public AccountResponse getAccountById(Long id) {
+    public AccountResponse getAccountById(UUID id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
         return modelMapper.map(account, AccountResponse.class);
     }
@@ -78,23 +75,17 @@ public class AccountService {
         return modelMapper.map(account, AccountResponse.class);
     }
 
-    public AccountResponse updateAccount(Long id, AccountUpdationRequest request) throws NoSuchAlgorithmException {
+    public AccountResponse updateAccount(UUID id, AccountUpdationRequest request) throws NoSuchAlgorithmException {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
         modelMapper.map(request, account);
 
         account.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        if(!request.getRoles().isEmpty()) {
-            List<Role> roles = roleRepository.findAllByName(request.getRoles());
-
-            account.setRoles(roles);
-        }
         
         accountRepository.save(account);
         return modelMapper.map(account, AccountResponse.class);
     }
 
-    public boolean deleteAccount(Long id) throws Exception {
+    public boolean deleteAccount(UUID id) throws Exception {
         try {
             Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
             accountRepository.delete(account);

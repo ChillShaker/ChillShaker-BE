@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountResponse {
-    Long id;
+    UUID id;
     String fullName;
     String email;
     String phone;
