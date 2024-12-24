@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ public class AccountService {
                 .toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse getAccountById(UUID id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
         return modelMapper.map(account, AccountResponse.class);
@@ -59,35 +61,54 @@ public class AccountService {
         return modelMapper.map(account, AccountResponse.class);
     }
 
-    public AccountResponse createAccount(AccountCreationRequest request) {
-        Role role = Role.builder().name(Role.RoleName.USER.name()).build();
-        HashSet<Role> roles = new HashSet<>();
-        roles.add(role);
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public AccountResponse createAccount(AccountCreationRequest request) throws Exception {
+        try {
+            Role role = Role.builder().name(Role.RoleName.USER.name()).build();
+            HashSet<Role> roles = new HashSet<>();
+            roles.add(role);
 
-        if (accountRepository.existsByEmail(request.getEmail()))
-            throw new CustomException(ErrorResponse.DATA_EXISTED);
+            if (accountRepository.existsByEmail(request.getEmail()))
+                throw new CustomException(ErrorResponse.DATA_EXISTED);
 
-        Account account = modelMapper.map(request, Account.class);
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
-        account.setRoles(roles);
+            Account account = modelMapper.map(request, Account.class);
+            account.setPassword(passwordEncoder.encode(request.getPassword()));
+            account.setRoles(roles);
 
-        accountRepository.save(account);
-        return modelMapper.map(account, AccountResponse.class);
+            accountRepository.save(account);
+            return modelMapper.map(account, AccountResponse.class);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
-    public AccountResponse updateAccount(UUID id, AccountUpdationRequest request) throws NoSuchAlgorithmException {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
-        modelMapper.map(request, account);
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public AccountResponse updateAccount(UUID id, AccountUpdationRequest request) throws Exception {
+        try {
+            Account account = accountRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Account not found"));
+            modelMapper.map(request, account);
 
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
-        
-        accountRepository.save(account);
-        return modelMapper.map(account, AccountResponse.class);
+            account.setPassword(passwordEncoder.encode(request.getPassword()));
+
+            accountRepository.save(account);
+            return modelMapper.map(account, AccountResponse.class);
+        } catch (NotFoundException e) {
+            throw new NotFoundException(e.getMessage());
+        }
+        catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public boolean deleteAccount(UUID id) throws Exception {
         try {
-            Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
+            Account account = accountRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Account not found"));
             accountRepository.delete(account);
             return true;
         }

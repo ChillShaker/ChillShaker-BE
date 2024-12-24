@@ -1,6 +1,7 @@
 package com.ducnt.chillshaker.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
@@ -20,7 +21,7 @@ public class BarTime extends BaseModel {
      LocalTime startTime;
      LocalTime endTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bar_id", referencedColumnName = "id")
      Bar bar;
 }

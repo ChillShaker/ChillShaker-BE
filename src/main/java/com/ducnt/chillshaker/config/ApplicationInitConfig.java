@@ -1,8 +1,10 @@
 package com.ducnt.chillshaker.config;
 
 import com.ducnt.chillshaker.model.Account;
+import com.ducnt.chillshaker.model.DrinkCategory;
 import com.ducnt.chillshaker.model.Role;
 import com.ducnt.chillshaker.repository.AccountRepository;
+import com.ducnt.chillshaker.repository.DrinkCategoryRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,7 +27,7 @@ public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
 
     @Bean
-    ApplicationRunner applicationRunner(AccountRepository accountRepository) {
+    ApplicationRunner applicationRunner(AccountRepository accountRepository, DrinkCategoryRepository drinkCategoryRepository) {
         return args -> {
           if(accountRepository.findByEmail("admin@chillshaker.com").isEmpty()) {
               Role adminRole = Role.builder().name(Role.RoleName.ADMIN.name()).build();
@@ -56,6 +58,7 @@ public class ApplicationInitConfig {
               accountRepository.saveAll(accounts);
               log.warn("Admin account created with email: admin@chillshaker.com and password: admin, please change it");
           }
+
         };
     }
 }
