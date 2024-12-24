@@ -18,7 +18,7 @@ public class Menu extends BaseModel{
      String name;
      String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bar_id", referencedColumnName = "id")
      Bar bar;
 

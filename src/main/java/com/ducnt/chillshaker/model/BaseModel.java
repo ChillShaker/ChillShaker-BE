@@ -19,6 +19,6 @@ public class BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
-    LocalDate createdDate;
-    LocalDate modifiedDate;
+    LocalDate createdDate = LocalDate.now();
+    LocalDate modifiedDate = LocalDate.now();
 }

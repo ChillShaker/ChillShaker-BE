@@ -11,6 +11,7 @@ import com.ducnt.chillshaker.model.Account;
 import com.ducnt.chillshaker.model.InvalidationToken;
 import com.ducnt.chillshaker.model.Role;
 import com.ducnt.chillshaker.repository.AccountRepository;
+import com.ducnt.chillshaker.repository.GenericSpecification;
 import com.ducnt.chillshaker.repository.InvalidationTokenRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -40,6 +41,7 @@ import java.util.UUID;
 public class AuthenticationService {
     AccountRepository accountRepository;
     InvalidationTokenRepository invalidationTokenRepository;
+    GenericSpecification<Account> accountGenericSpecification;
 
     @NonFinal
     @Value("${jwt.jwt-signature-key}")
@@ -62,7 +64,8 @@ public class AuthenticationService {
     protected String REFRESHABLE_DURATION_TYPE;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var account = accountRepository.findByEmail(request.getEmail()).orElseThrow(() -> new NotFoundException("Account not found"));
+        var account = accountRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new NotFoundException("Account not found"));
 
         PasswordEncoder bcrypt = new BCryptPasswordEncoder();
         boolean isAuthenticated = bcrypt.matches(request.getPassword(), account.getPassword());
