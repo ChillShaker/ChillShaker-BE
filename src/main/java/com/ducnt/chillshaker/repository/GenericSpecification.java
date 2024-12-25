@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.hibernate.query.SortDirection;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class GenericSpecification<T> {
     public Specification<T> getFilters(String q,
                                        String includeProperties,
                                        String attribute,
-                                       Function<Root<T>, Order> orderBy) {
+                                       String orderBy) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             assert query != null;
@@ -32,9 +33,14 @@ public class GenericSpecification<T> {
                     root.fetch(includeProperty, JoinType.LEFT);
                 }
             }
-            if(orderBy != null) {
-                query.orderBy(orderBy.apply(root));
+            if(orderBy != null && !orderBy.isEmpty()) {
+                if(SortDirection.interpret(orderBy) == SortDirection.DESCENDING) {
+                    criteriaBuilder.desc(root.get(attribute));
+                } else {
+                    criteriaBuilder.asc(root.get(attribute));
+                }
             }
+
             query.distinct(true);
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

@@ -5,6 +5,7 @@ import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AccountService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,7 @@ public class AccountController {
                 .data(accountResponse)
                 .build();
     }
+
 
     @DeleteMapping("/account/{id}")
     public ApiResponse deleteAccount(@PathVariable("id") UUID id) throws Exception {
