@@ -5,6 +5,7 @@ import com.ducnt.chillshaker.dto.request.drink.DrinkUpdationRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.dto.response.drink.DrinkResponse;
 import com.ducnt.chillshaker.service.implement.DrinkService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ public class DrinkController {
                 .build();
     }
 
+    @PermitAll
     @GetMapping("/drinks")
     public ApiResponse getAllDrink(
             @RequestParam(required = false, defaultValue = "") String q,
@@ -62,6 +64,7 @@ public class DrinkController {
                 .build();
     }
 
+    @PermitAll
     @GetMapping("/drink/{id}")
     public ApiResponse getDrinkById(@PathVariable("id") UUID id) {
         DrinkResponse drinkResponse = drinkService.getDrinkById(id);

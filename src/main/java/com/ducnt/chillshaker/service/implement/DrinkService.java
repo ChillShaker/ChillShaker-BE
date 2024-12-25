@@ -12,19 +12,24 @@ import com.ducnt.chillshaker.repository.DrinkCategoryRepository;
 import com.ducnt.chillshaker.repository.DrinkRepository;
 import com.ducnt.chillshaker.repository.GenericSpecification;
 import com.ducnt.chillshaker.service.thirdparty.CloudinaryService;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Root;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.query.SortDirection;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +56,7 @@ public class DrinkService {
             drink.setDrinkCategory(drinkCategory);
             List<String> drinkImageUrls = cloudinaryService.uploadFiles(creationRequest.getFiles());
             drink.setImage(String.join(", ", drinkImageUrls));
+            drink.setStatus(true);
 
             drinkRepository.save(drink);
             return modelMapper.map(drink, DrinkResponse.class);
@@ -79,7 +85,6 @@ public class DrinkService {
             List<String> updatedImageUrls = cloudinaryService
                     .updateFiles(request.getOldFileUrls(), request.getNewFiles());
 
-            drink.setStatus(true);
             drink.setImage(String.join(", ", updatedImageUrls));
             drink.setDrinkCategory(drinkCategory);
 
@@ -114,7 +119,8 @@ public class DrinkService {
                 pageSize
         );
 
-        var filters = drinkGenericSpecification.getFilters(q, includeProperties, attribute, null);
+
+        var filters = drinkGenericSpecification.getFilters(q, includeProperties, attribute, "");
 
         Page<Drink> drinkPage = drinkRepository.findAll(filters ,pageRequest);
 
