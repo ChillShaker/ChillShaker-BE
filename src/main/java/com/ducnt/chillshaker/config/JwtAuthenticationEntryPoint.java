@@ -22,7 +22,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         ObjectMapper mapper = new ObjectMapper();
         response.getWriter().write(mapper
-                .writeValueAsString(ApiResponse.builder().message(unauthenticated.getMessage()).build()));
+                .writeValueAsString(ApiResponse
+                        .builder()
+                        .code(unauthenticated.getHttpStatusCode().value())
+                        .message(unauthenticated.getMessage() + "With wrong JWT")
+                        .build()));
 
         response.flushBuffer();
     }

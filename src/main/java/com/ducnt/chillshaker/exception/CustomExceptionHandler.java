@@ -26,7 +26,13 @@ public class CustomExceptionHandler {
         ErrorResponse notFound = ErrorResponse.NOT_FOUND;
 
         return ResponseEntity.status(notFound.getHttpStatusCode())
-                .body(ApiResponse.builder().message(e.getMessage()).build());
+                .body(
+                        ApiResponse
+                                .builder()
+                                .code(notFound.getHttpStatusCode().value())
+                                .message(e.getMessage())
+                                .build()
+                );
     }
 
     @ExceptionHandler(ExistDataException.class)
@@ -34,7 +40,13 @@ public class CustomExceptionHandler {
         ErrorResponse dataExisted = ErrorResponse.DATA_EXISTED;
 
         return ResponseEntity.status(dataExisted.getHttpStatusCode())
-                .body(ApiResponse.builder().message(e.getMessage()).build());
+                .body(
+                        ApiResponse
+                                .builder()
+                                .code(dataExisted.getHttpStatusCode().value())
+                                .message(e.getMessage())
+                                .build()
+                );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -75,19 +87,37 @@ public class CustomExceptionHandler {
         ErrorResponse unauthorized = ErrorResponse.UNAUTHORIZED;
 
         return ResponseEntity.status(unauthorized.getHttpStatusCode())
-                .body(ApiResponse.builder().message(unauthorized.getMessage()).build());
+                .body(
+                        ApiResponse
+                                .builder()
+                                .code(unauthorized.getHttpStatusCode().value())
+                                .message(unauthorized.getMessage())
+                                .build()
+                );
     }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ApiResponse> handleCustomException(CustomException e) {
         ErrorResponse errorResponse = e.getErrorResponse();
         var response = ResponseEntity.status(errorResponse.getHttpStatusCode());
-        return response.body(ApiResponse.builder().message(errorResponse.getMessage()).build());
+        return response.body(
+                ApiResponse
+                        .builder()
+                        .code(errorResponse.getHttpStatusCode().value())
+                        .message(errorResponse.getMessage())
+                        .build()
+        );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(CustomException e) {
         var response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        return response.body(ApiResponse.builder().message("Internal server error!").build());
+        return response.body(
+                ApiResponse
+                        .builder()
+                        .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .message("Internal server error!")
+                        .build()
+        );
     }
 }
