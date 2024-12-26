@@ -17,7 +17,11 @@ public enum ErrorResponse {
     EMAIL_INVALID("Email must be a well-formed email address",  HttpStatus.BAD_REQUEST),
     PHONE_INVALID("Phone number is not in Vietnamese syntax", HttpStatus.BAD_REQUEST),
 
-    /**COMMON ERROR RESPONSE**/
+    /** ERROR RESPONSE FOR **/
+    FILE_OVER_SIZE("Max file size is {min} MB", HttpStatus.BAD_REQUEST),
+    IMAGE_FILE_INVALID("Only jpg, png, gif, bmp files are allowed", HttpStatus.BAD_REQUEST),
+
+    /** COMMON ERROR RESPONSE **/
     DATA_EXISTED("Data is existed", HttpStatus.BAD_REQUEST),
     BAD_REQUEST("Invalid request", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED("Unauthenticated", HttpStatus.UNAUTHORIZED),

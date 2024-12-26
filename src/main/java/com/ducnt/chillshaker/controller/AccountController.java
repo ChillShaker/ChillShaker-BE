@@ -5,6 +5,7 @@ import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AccountService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,12 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/accounts")
+@RequestMapping("${api.base-url}")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountController {
     AccountService accountService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/account/{id}")
     public ApiResponse getAccountById(@PathVariable("id") UUID id) {
         AccountResponse accountResponse = accountService.getAccountById(id);
         return ApiResponse.builder()
@@ -35,7 +36,7 @@ public class AccountController {
                 .build();
     }
 
-    @GetMapping
+    @GetMapping("/accounts")
     public ApiResponse getAllAccount() {
         List<AccountResponse> accountResponses = accountService.getAllAccounts();
         return ApiResponse.builder()
@@ -44,7 +45,7 @@ public class AccountController {
                 .build();
     }
 
-    @GetMapping("/myInfo")
+    @GetMapping("/account/myInfo")
     public ApiResponse getMyInfo() {
         AccountResponse accountResponses = accountService.getMyInfo();
         return ApiResponse.builder()
@@ -53,17 +54,18 @@ public class AccountController {
                 .build();
     }
 
-    @PostMapping
+    @PostMapping("/account")
     public ApiResponse createAccount(@RequestBody @Valid AccountCreationRequest request) throws Exception {
         AccountResponse accountResponse = accountService.createAccount(request);
         return ApiResponse.builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Created account successfully")
-                .data(accountResponse).build();
+                .data(accountResponse)
+                .build();
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse updateAccount(@PathVariable("id") UUID id, @RequestBody @Valid AccountUpdationRequest request) throws NoSuchAlgorithmException {
+    @PutMapping("/account/{id}")
+    public ApiResponse updateAccount(@PathVariable("id") UUID id, @RequestBody @Valid AccountUpdationRequest request) throws Exception {
         AccountResponse accountResponse = accountService.updateAccount(id, request);
         return ApiResponse.builder()
                 .message("Updated account successfully")
@@ -71,7 +73,8 @@ public class AccountController {
                 .build();
     }
 
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("/account/{id}")
     public ApiResponse deleteAccount(@PathVariable("id") UUID id) throws Exception {
         boolean result = accountService.deleteAccount(id);
         if (result) {

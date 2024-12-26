@@ -19,7 +19,7 @@ import java.text.ParseException;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/api/v1")
+@RequestMapping("${api.base-url}")
 public class AuthenticationController {
     AuthenticationService authenticationService;
     @PostMapping("/log-in")

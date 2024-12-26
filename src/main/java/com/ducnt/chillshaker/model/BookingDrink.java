@@ -7,21 +7,22 @@ import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalTime;
-
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class BarTime extends BaseModel {
-     int dayOfWeek;
-     LocalTime startTime;
-     LocalTime endTime;
+public class BookingDrink extends BaseModel{
+    double actualPrice;
+    int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bar_id", referencedColumnName = "id")
-     Bar bar;
+    @JoinColumn(name = "booking_id", referencedColumnName = "id")
+    Booking booking;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "drink_id", referencedColumnName = "id")
+    Drink drink;
 }

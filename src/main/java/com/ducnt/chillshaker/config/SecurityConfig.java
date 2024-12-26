@@ -18,8 +18,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {"/api/v1/accounts/myInfo", "/api/v1/log-in",
-            "/api/v1/log-out", "/api/v1/refresh"};
+    private final String[] PUBLIC_ENDPOINTS = {
+            "/api/v1/accounts/myInfo", "/api/v1/log-in", "/api/v1/log-out", "/api/v1/refresh",
+            "/api/v1/drinks", "/api/v1/drink/*",
+            "/api/v1/drink-categories", "/api/v1/drink-category/*",
+            "/api/v1/bar/*"
+    };
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;

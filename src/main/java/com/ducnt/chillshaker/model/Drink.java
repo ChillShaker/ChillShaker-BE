@@ -1,9 +1,6 @@
 package com.ducnt.chillshaker.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -27,7 +24,10 @@ public class Drink extends BaseModel {
     @ManyToMany(mappedBy = "drinks")
      Collection<Menu> menus = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drinkCategory_id", referencedColumnName = "id")
      DrinkCategory drinkCategory;
+
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<BookingDrink> bookingDrinks;
 }
