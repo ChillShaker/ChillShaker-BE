@@ -27,4 +27,7 @@ public class Drink extends BaseModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drinkCategory_id", referencedColumnName = "id")
      DrinkCategory drinkCategory;
+
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<BookingDrink> bookingDrinks;
 }

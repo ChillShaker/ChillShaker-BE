@@ -30,4 +30,10 @@ public class Bar extends BaseModel{
 
     @OneToMany(mappedBy = "bar", cascade = CascadeType.ALL, orphanRemoval = true)
     Collection<Menu> menus = new ArrayList<>();
+
+    @OneToMany(mappedBy = "bar", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "bar", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<Table> tables = new ArrayList<>();
 }
