@@ -14,7 +14,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Table extends BaseModel{
+public class BarTable extends BaseModel{
     String name;
     int status;
     boolean isActive;
@@ -25,9 +25,9 @@ public class Table extends BaseModel{
     Bar bar;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_type_id", referencedColumnName = "id")
+    @JoinColumn(name = "tableType_id", referencedColumnName = "id")
     TableType tableType;
 
-    @OneToMany(mappedBy = "table", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "barTable", cascade = CascadeType.ALL)
     Collection<BookingTable> bookingTables = new ArrayList<>();
 }

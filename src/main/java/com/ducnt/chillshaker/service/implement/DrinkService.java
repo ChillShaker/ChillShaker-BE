@@ -111,14 +111,17 @@ public class DrinkService {
                                             String includeProperties,
                                             String attribute,
                                             Integer pageIndex,
-                                            Integer pageSize) {
+                                            Integer pageSize,
+                                            String sort
+    ) {
         PageRequest pageRequest = PageRequest.of(
                 pageIndex > 0 ? pageIndex - 1 : 0,
-                pageSize
+                pageSize,
+                sort.equals("desc") ? Sort.by(Sort.Direction.DESC, attribute) : Sort.by(Sort.Direction.ASC, attribute)
         );
 
 
-        var filters = drinkGenericSpecification.getFilters(q, includeProperties, attribute, "");
+        var filters = drinkGenericSpecification.getFilters(q, includeProperties, attribute);
 
         Page<Drink> drinkPage = drinkRepository.findAll(filters ,pageRequest);
 

@@ -60,9 +60,10 @@ public class DrinkCategoryController {
             @RequestParam(required = false, defaultValue = "") String includeProperties,
             @RequestParam(required = false, defaultValue = "name") String attribute,
             @RequestParam(required = false, defaultValue = "0") Integer pageIndex,
-            @RequestParam(required = false, defaultValue = "10") Integer pageSize
+            @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false, defaultValue = "") String sort
     ) {
-        var responseData = drinkCategoryService.getAllDrinkCategory(q, includeProperties, attribute, pageIndex, pageSize);
+        var responseData = drinkCategoryService.getAllDrinkCategory(q, includeProperties, attribute, pageIndex, pageSize, sort);
         return ApiResponse
                 .builder()
                 .message("Data loaded")

@@ -22,6 +22,6 @@ public class TableType extends BaseModel{
     int limitOfPeople;
     String image;
 
-    @OneToMany(mappedBy = "tableType", cascade = CascadeType.ALL, orphanRemoval = true)
-    Collection<Table> tables = new ArrayList<>();
+    @OneToMany(mappedBy = "tableType", cascade = CascadeType.ALL)
+    Collection<BarTable> barTables = new ArrayList<>();
 }
