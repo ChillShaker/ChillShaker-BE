@@ -28,7 +28,7 @@ public class TableTypeController {
         return ApiResponse
                 .builder()
                 .code(HttpStatus.CREATED.value())
-                .message("Created barTable type success")
+                .message("Created table type success")
                 .data(responseData)
                 .build();
     }
@@ -40,7 +40,7 @@ public class TableTypeController {
         return ApiResponse
                 .builder()
                 .code(HttpStatus.OK.value())
-                .message("Updated barTable type success")
+                .message("Updated table type success")
                 .data(responseData)
                 .build();
     }
@@ -51,7 +51,7 @@ public class TableTypeController {
         return ApiResponse
                 .builder()
                 .code(HttpStatus.OK.value())
-                .message("Deleted barTable type success")
+                .message("Deleted table type success")
                 .data(responseData)
                 .build();
     }

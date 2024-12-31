@@ -28,7 +28,7 @@ public class GenericSpecification<T> {
                 );
             }
             if(includeProperties != null && !includeProperties.isBlank()) {
-                for (String includeProperty : includeProperties.split("&")) {
+                for (String includeProperty : includeProperties.split(",")) {
                     root.fetch(includeProperty, JoinType.LEFT);
                 }
             }
