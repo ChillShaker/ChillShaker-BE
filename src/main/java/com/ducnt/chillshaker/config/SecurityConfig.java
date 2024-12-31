@@ -23,7 +23,8 @@ public class SecurityConfig {
             "/api/v1/drinks", "/api/v1/drink/*",
             "/api/v1/drink-categories", "/api/v1/drink-category/*",
             "/api/v1/bar/*",
-            "/api/v1/table-types", "/api/v1/table-type/*"
+            "/api/v1/table-types", "/api/v1/table-type/*",
+            "/api/v1/bar-tables", "/api/v1/bar-table/*",
     };
 
     @Autowired
