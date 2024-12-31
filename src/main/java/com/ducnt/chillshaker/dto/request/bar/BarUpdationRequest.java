@@ -33,7 +33,7 @@ public class BarUpdationRequest {
     String address;
 
     List<String> oldFileUrls;
-    List<MultipartFile> newFiles;
+    List<MultipartFile> newFiles = new ArrayList<>();
 
     List<BarTimeUpdationRequest> barTimes = new ArrayList<>();
 }

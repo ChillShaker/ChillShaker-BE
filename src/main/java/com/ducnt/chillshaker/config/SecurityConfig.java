@@ -22,7 +22,8 @@ public class SecurityConfig {
             "/api/v1/accounts/myInfo", "/api/v1/log-in", "/api/v1/log-out", "/api/v1/refresh",
             "/api/v1/drinks", "/api/v1/drink/*",
             "/api/v1/drink-categories", "/api/v1/drink-category/*",
-            "/api/v1/bar/*"
+            "/api/v1/bar/*",
+            "/api/v1/table-types", "/api/v1/table-type/*"
     };
 
     @Autowired

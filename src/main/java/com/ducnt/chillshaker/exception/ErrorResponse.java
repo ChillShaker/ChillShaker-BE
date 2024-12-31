@@ -19,7 +19,7 @@ public enum ErrorResponse {
 
     /** ERROR RESPONSE FOR **/
     FILE_OVER_SIZE("Max file size is {min} MB", HttpStatus.BAD_REQUEST),
-    IMAGE_FILE_INVALID("Only jpg, png, gif, bmp files are allowed", HttpStatus.BAD_REQUEST),
+    IMAGE_FILE_INVALID("Only jpg, png, gif, bmp files are allowed or not empty file", HttpStatus.BAD_REQUEST),
 
     /** COMMON ERROR RESPONSE **/
     DATA_EXISTED("Data is existed", HttpStatus.BAD_REQUEST),
@@ -27,6 +27,7 @@ public enum ErrorResponse {
     UNAUTHENTICATED("Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED("You do not have permission to access this resource", HttpStatus.FORBIDDEN),
     NOT_FOUND("Data not found", HttpStatus.NOT_FOUND),
+    INTERNAL_SERVER("Unspecified error at server", HttpStatus.INTERNAL_SERVER_ERROR)
     ;
 
     private String message;

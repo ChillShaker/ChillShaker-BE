@@ -35,5 +35,5 @@ public class Bar extends BaseModel{
     Collection<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "bar", cascade = CascadeType.ALL, orphanRemoval = true)
-    Collection<Table> tables = new ArrayList<>();
+    Collection<BarTable> barTables = new ArrayList<>();
 }
