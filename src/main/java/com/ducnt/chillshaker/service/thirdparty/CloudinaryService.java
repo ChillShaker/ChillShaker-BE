@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -71,5 +72,25 @@ public class CloudinaryService {
             }
         }
         return uploadedUrls;
+    }
+
+    @Transactional
+    public boolean deleteFiles(String imageUrls) throws IOException {
+        List<String> imageUrlList = extractUrlFromString(imageUrls);
+        try {
+            for (String oldFileUrl : imageUrlList) {
+                String publicId = extractPublicId(oldFileUrl);
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            }
+
+            return true;
+        } catch (IOException ex) {
+            log.error(ex.getMessage());
+            throw new IOException(ex.getMessage());
+        }
+    }
+
+    private List<String> extractUrlFromString(String imageUrls) {
+        return Arrays.asList(imageUrls.split("\\s*,\\s*"));
     }
 }

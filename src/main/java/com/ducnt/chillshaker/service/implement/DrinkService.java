@@ -12,12 +12,9 @@ import com.ducnt.chillshaker.repository.DrinkCategoryRepository;
 import com.ducnt.chillshaker.repository.DrinkRepository;
 import com.ducnt.chillshaker.repository.GenericSpecification;
 import com.ducnt.chillshaker.service.thirdparty.CloudinaryService;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Root;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.query.SortDirection;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -107,12 +104,13 @@ public class DrinkService {
         return true;
     }
 
-    public Page<DrinkResponse> getAllDrinks(String q,
-                                            String includeProperties,
-                                            String attribute,
-                                            Integer pageIndex,
-                                            Integer pageSize,
-                                            String sort
+    public Page<DrinkResponse> getAllDrinks(
+            String q,
+            String includeProperties,
+            String attribute,
+            Integer pageIndex,
+            Integer pageSize,
+            String sort
     ) {
         PageRequest pageRequest = PageRequest.of(
                 pageIndex > 0 ? pageIndex - 1 : 0,
@@ -123,12 +121,14 @@ public class DrinkService {
 
         var filters = drinkGenericSpecification.getFilters(q, includeProperties, attribute);
 
+        long totalOfElement = drinkRepository.count();
+
         Page<Drink> drinkPage = drinkRepository.findAll(filters ,pageRequest);
 
         List<DrinkResponse> drinkResponses = drinkPage.getContent().stream()
                 .map((element) -> modelMapper.map(element, DrinkResponse.class))
                 .toList();
-        return new PageImpl<>(drinkResponses, drinkPage.getPageable(), drinkPage.getNumberOfElements());
+        return new PageImpl<>(drinkResponses, drinkPage.getPageable(), totalOfElement);
     }
 
     public DrinkResponse getDrinkById(UUID id) {
