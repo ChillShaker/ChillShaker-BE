@@ -73,6 +73,7 @@ public class MenuService {
             Menu menu = menuRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Menu is not existed"));
             menu.setStatus(false);
+            menuRepository.save(menu);
             return true;
         } catch (NotFoundException ex) {
             throw new NotFoundException(ex.getMessage());
@@ -100,7 +101,7 @@ public class MenuService {
 
             long totalOfElement = menuRepository.count();
 
-            Page<Menu> menuPage = menuRepository.findAll(filters, pageRequest);
+            Page<Menu> menuPage = menuRepository.findAllByStatusFalse(pageRequest);
 
             List<MenuResponse> menuResponses = menuPage.getContent().stream()
                     .map(element -> modelMapper.map(element, MenuResponse.class)).toList();

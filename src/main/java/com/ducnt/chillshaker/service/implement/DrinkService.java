@@ -4,6 +4,7 @@ import com.ducnt.chillshaker.dto.request.drink.DrinkCreationRequest;
 import com.ducnt.chillshaker.dto.request.drink.DrinkUpdateRequest;
 import com.ducnt.chillshaker.dto.response.drink.DrinkResponse;
 import com.ducnt.chillshaker.exception.CustomException;
+import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.ExistDataException;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.Drink;
@@ -98,10 +99,17 @@ public class DrinkService {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public boolean deleteDrink(UUID id) {
-        Drink drink = drinkRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Drink is not found"));
-        drinkRepository.delete(drink);
-        return true;
+        try {
+            Drink drink = drinkRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Drink is not found"));
+            drink.setStatus(false);
+            drinkRepository.save(drink);
+            return true;
+        } catch (NotFoundException ex) {
+            throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            throw new CustomException(ErrorResponse.INTERNAL_SERVER);
+        }
     }
 
     public Page<DrinkResponse> getAllDrinks(
@@ -123,7 +131,7 @@ public class DrinkService {
 
         long totalOfElement = drinkRepository.count();
 
-        Page<Drink> drinkPage = drinkRepository.findAll(filters ,pageRequest);
+        Page<Drink> drinkPage = drinkRepository.findAllByStatusFalse(pageRequest);
 
         List<DrinkResponse> drinkResponses = drinkPage.getContent().stream()
                 .map((element) -> modelMapper.map(element, DrinkResponse.class))

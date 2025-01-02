@@ -98,6 +98,7 @@ public class BarTableService {
         }
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     public Page<BarTableResponse> getAllBarTableForCustomer(
             String q,
             String includeProperties,
