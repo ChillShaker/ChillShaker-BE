@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.drink.DrinkCreationRequest;
-import com.ducnt.chillshaker.dto.request.drink.DrinkUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drink.DrinkUpdateRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.dto.response.drink.DrinkResponse;
 import com.ducnt.chillshaker.service.implement.DrinkService;
@@ -35,7 +35,7 @@ public class DrinkController {
     }
 
     @PutMapping("/drink/{id}")
-    public ApiResponse updateDrink(@PathVariable("id")UUID id, @Valid @ModelAttribute DrinkUpdationRequest request) throws Exception {
+    public ApiResponse updateDrink(@PathVariable("id")UUID id, @Valid @ModelAttribute DrinkUpdateRequest request) throws Exception {
         DrinkResponse drinkResponse = drinkService.updateDrink(id, request);
         return ApiResponse
                 .builder()

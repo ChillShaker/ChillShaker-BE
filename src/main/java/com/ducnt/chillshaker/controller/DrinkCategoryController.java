@@ -1,10 +1,9 @@
 package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryCreationRequest;
-import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdateRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.DrinkCategoryService;
-import jakarta.annotation.security.PermitAll;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,7 +32,7 @@ public class DrinkCategoryController {
 
     @PutMapping("/drink-category/{id}")
     public ApiResponse updateDrinkCategory(@PathVariable("id")UUID id,
-                                           @RequestBody DrinkCategoryUpdationRequest request) {
+                                           @RequestBody DrinkCategoryUpdateRequest request) {
         var responseData = drinkCategoryService.updateDrinkCategory(id, request);
         return ApiResponse
                 .builder()

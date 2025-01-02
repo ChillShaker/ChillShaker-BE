@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.barTable.BarTableCreationRequest;
-import com.ducnt.chillshaker.dto.request.barTable.BarTableUpdationRequest;
+import com.ducnt.chillshaker.dto.request.barTable.BarTableUpdateRequest;
 import com.ducnt.chillshaker.dto.response.barTable.BarTableResponse;
 import com.ducnt.chillshaker.exception.ExistDataException;
 import com.ducnt.chillshaker.exception.NotFoundException;
@@ -52,7 +52,7 @@ public class BarTableServiceTest {
     private BarTable barTable;
     private TableType tableType;
     private BarTableCreationRequest creationRequest;
-    private BarTableUpdationRequest updationRequest;
+    private BarTableUpdateRequest updationRequest;
     private BarTableResponse barTableResponse;
 
     @BeforeEach
@@ -72,7 +72,7 @@ public class BarTableServiceTest {
         creationRequest.setName("Table 1");
         creationRequest.setTableTypeId(typeId);
         
-        updationRequest = new BarTableUpdationRequest();
+        updationRequest = new BarTableUpdateRequest();
         updationRequest.setName("Updated Table 1");
         updationRequest.setTableTypeId(typeId);
         
@@ -120,7 +120,7 @@ public class BarTableServiceTest {
         when(barTableRepository.findById(tableId)).thenReturn(Optional.of(barTable));
         when(tableTypeRepository.findById(typeId)).thenReturn(Optional.of(tableType));
         
-        doNothing().when(modelMapper).map(any(BarTableUpdationRequest.class), any(BarTable.class));
+        doNothing().when(modelMapper).map(any(BarTableUpdateRequest.class), any(BarTable.class));
         
         when(modelMapper.map(any(BarTable.class), eq(BarTableResponse.class))).thenReturn(barTableResponse);
         

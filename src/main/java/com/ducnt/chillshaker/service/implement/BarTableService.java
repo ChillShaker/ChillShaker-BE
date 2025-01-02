@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.barTable.BarTableCreationRequest;
-import com.ducnt.chillshaker.dto.request.barTable.BarTableUpdationRequest;
+import com.ducnt.chillshaker.dto.request.barTable.BarTableUpdateRequest;
 import com.ducnt.chillshaker.dto.response.barTable.BarTableManagementResponse;
 import com.ducnt.chillshaker.dto.response.barTable.BarTableResponse;
 import com.ducnt.chillshaker.exception.CustomException;
@@ -63,7 +63,7 @@ public class BarTableService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public BarTableResponse updateBarTable(UUID id, BarTableUpdationRequest request) {
+    public BarTableResponse updateBarTable(UUID id, BarTableUpdateRequest request) {
         try {
             BarTable barTable = barTableRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Table is not existed"));

@@ -1,6 +1,6 @@
 package com.ducnt.chillshaker.service.implement;
 
-import com.ducnt.chillshaker.dto.request.bar.BarUpdationRequest;
+import com.ducnt.chillshaker.dto.request.bar.BarUpdateRequest;
 import com.ducnt.chillshaker.dto.response.bar.BarResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -30,7 +30,7 @@ public class BarService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public BarResponse updateBar(UUID id, BarUpdationRequest request) {
+    public BarResponse updateBar(UUID id, BarUpdateRequest request) {
         try {
             var bar = barRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Bar not found"));

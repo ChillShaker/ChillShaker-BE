@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.tableType.TableTypeCreationRequest;
-import com.ducnt.chillshaker.dto.request.tableType.TableTypeUpdationRequest;
+import com.ducnt.chillshaker.dto.request.tableType.TableTypeUpdateRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.dto.response.tableType.TableTypeResponse;
 import com.ducnt.chillshaker.service.implement.TableTypeService;
@@ -35,7 +35,7 @@ public class TableTypeController {
 
     @PutMapping("/table-type/{id}")
     public ApiResponse updateTableType(@PathVariable("id") UUID id,
-                                       @Valid @ModelAttribute TableTypeUpdationRequest request) {
+                                       @Valid @ModelAttribute TableTypeUpdateRequest request) {
         TableTypeResponse responseData = tableTypeService.updateTableType(id, request);
         return ApiResponse
                 .builder()

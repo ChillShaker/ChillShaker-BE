@@ -1,8 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
-import com.cloudinary.Api;
 import com.ducnt.chillshaker.dto.request.menu.MenuCreationRequest;
-import com.ducnt.chillshaker.dto.request.menu.MenuUpdationRequest;
+import com.ducnt.chillshaker.dto.request.menu.MenuUpdateRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.MenuService;
 import jakarta.validation.Valid;
@@ -33,7 +32,7 @@ public class MenuController {
     }
 
     @PutMapping("/menu/{id}")
-    public ApiResponse updateMenu(@PathVariable("id")UUID id, @Valid @ModelAttribute MenuUpdationRequest request) {
+    public ApiResponse updateMenu(@PathVariable("id")UUID id, @Valid @ModelAttribute MenuUpdateRequest request) {
         var dataResponse = menuService.updateMenu(id, request);
         return ApiResponse
                 .builder()

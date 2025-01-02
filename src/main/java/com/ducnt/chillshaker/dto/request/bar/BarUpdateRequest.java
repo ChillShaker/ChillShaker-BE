@@ -1,7 +1,6 @@
 package com.ducnt.chillshaker.dto.request.bar;
 
-import com.ducnt.chillshaker.dto.request.barTime.BarTimeUpdationRequest;
-import com.ducnt.chillshaker.model.BarTime;
+import com.ducnt.chillshaker.dto.request.barTime.BarTimeUpdateRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -20,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BarUpdationRequest {
+public class BarUpdateRequest {
     @Size(min = 4, message = "FULLNAME_INVALID")
     String name;
     @Email(message = "EMAIL_INVALID")
@@ -35,5 +34,5 @@ public class BarUpdationRequest {
     List<String> oldFileUrls;
     List<MultipartFile> newFiles = new ArrayList<>();
 
-    List<BarTimeUpdationRequest> barTimes = new ArrayList<>();
+    List<BarTimeUpdateRequest> barTimes = new ArrayList<>();
 }

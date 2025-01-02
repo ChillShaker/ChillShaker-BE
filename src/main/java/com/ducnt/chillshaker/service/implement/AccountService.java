@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountUpdateRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -85,7 +84,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public AccountResponse updateAccount(UUID id, AccountUpdationRequest request) throws Exception {
+    public AccountResponse updateAccount(UUID id, AccountUpdateRequest request) throws Exception {
         try {
             Account account = accountRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Account not found"));

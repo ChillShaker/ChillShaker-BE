@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.drink.DrinkCreationRequest;
-import com.ducnt.chillshaker.dto.request.drink.DrinkUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drink.DrinkUpdateRequest;
 import com.ducnt.chillshaker.dto.response.drink.DrinkResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ExistDataException;
@@ -68,7 +68,7 @@ public class DrinkService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public DrinkResponse updateDrink(UUID id, DrinkUpdationRequest request) throws Exception {
+    public DrinkResponse updateDrink(UUID id, DrinkUpdateRequest request) throws Exception {
         try {
             Drink drink = drinkRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Drink is not found"));

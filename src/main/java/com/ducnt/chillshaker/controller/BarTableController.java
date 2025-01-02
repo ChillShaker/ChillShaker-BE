@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.barTable.BarTableCreationRequest;
-import com.ducnt.chillshaker.dto.request.barTable.BarTableUpdationRequest;
+import com.ducnt.chillshaker.dto.request.barTable.BarTableUpdateRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.BarTableService;
 import lombok.AccessLevel;
@@ -32,7 +32,7 @@ public class BarTableController {
     }
 
     @PutMapping("/bar-table/{id}")
-    public ApiResponse updateBarTable(@PathVariable("id") UUID id, @RequestBody BarTableUpdationRequest request) {
+    public ApiResponse updateBarTable(@PathVariable("id") UUID id, @RequestBody BarTableUpdateRequest request) {
         var dataResponse = barTableService.updateBarTable(id, request);
 
         return ApiResponse

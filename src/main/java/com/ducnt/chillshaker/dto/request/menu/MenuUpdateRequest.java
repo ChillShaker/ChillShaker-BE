@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MenuUpdationRequest {
+public class MenuUpdateRequest {
     String name;
     String description;
     String images;

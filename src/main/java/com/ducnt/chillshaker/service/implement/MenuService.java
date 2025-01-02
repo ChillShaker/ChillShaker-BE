@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.menu.MenuCreationRequest;
-import com.ducnt.chillshaker.dto.request.menu.MenuUpdationRequest;
+import com.ducnt.chillshaker.dto.request.menu.MenuUpdateRequest;
 import com.ducnt.chillshaker.dto.response.menu.MenuResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -22,7 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +51,7 @@ public class MenuService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public MenuResponse updateMenu(UUID id, MenuUpdationRequest request) {
+    public MenuResponse updateMenu(UUID id, MenuUpdateRequest request) {
         try {
             Menu menu = menuRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Menu is not existed"));

@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.tableType.TableTypeCreationRequest;
-import com.ducnt.chillshaker.dto.request.tableType.TableTypeUpdationRequest;
+import com.ducnt.chillshaker.dto.request.tableType.TableTypeUpdateRequest;
 import com.ducnt.chillshaker.dto.response.tableType.TableTypeResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ExistDataException;
@@ -111,7 +111,7 @@ class TableTypeServiceTest {
     @Test
     void updateTableType_Success() throws Exception {
         // Arrange
-        TableTypeUpdationRequest request = new TableTypeUpdationRequest();
+        TableTypeUpdateRequest request = new TableTypeUpdateRequest();
         request.setName("Updated Name");
         request.setNewFiles(mockFiles);
         request.setOldFileUrls(Arrays.asList("old1.jpg", "old2.jpg"));
@@ -131,7 +131,7 @@ class TableTypeServiceTest {
             );
         
         // Sửa cách mock cho modelMapper
-        doNothing().when(modelMapper).map(any(TableTypeUpdationRequest.class), any(TableType.class));
+        doNothing().when(modelMapper).map(any(TableTypeUpdateRequest.class), any(TableType.class));
         doReturn(tableTypeResponse).when(modelMapper).map(any(TableType.class), eq(TableTypeResponse.class));
         
         when(tableTypeRepository.save(any(TableType.class))).thenReturn(updatedTableType);
@@ -146,7 +146,7 @@ class TableTypeServiceTest {
             eq(Arrays.asList("old1.jpg", "old2.jpg")), 
             eq(mockFiles)
         );
-        verify(modelMapper).map(any(TableTypeUpdationRequest.class), any(TableType.class));
+        verify(modelMapper).map(any(TableTypeUpdateRequest.class), any(TableType.class));
         verify(modelMapper).map(any(TableType.class), eq(TableTypeResponse.class));
     }
 
@@ -157,7 +157,7 @@ class TableTypeServiceTest {
 
         // Act & Assert
         assertThrows(NotFoundException.class, 
-            () -> tableTypeService.updateTableType(testId, new TableTypeUpdationRequest()));
+            () -> tableTypeService.updateTableType(testId, new TableTypeUpdateRequest()));
     }
 
     @Test
@@ -227,7 +227,7 @@ class TableTypeServiceTest {
     @Test
     void updateTableType_UploadError_ThrowsCustomException() throws Exception {
         // Arrange
-        TableTypeUpdationRequest request = new TableTypeUpdationRequest();
+        TableTypeUpdateRequest request = new TableTypeUpdateRequest();
         request.setName("Updated Name");
         request.setNewFiles(mockFiles);
         request.setOldFileUrls(Arrays.asList("old1.jpg", "old2.jpg"));

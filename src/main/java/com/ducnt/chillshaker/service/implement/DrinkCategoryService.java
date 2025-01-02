@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryCreationRequest;
-import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdateRequest;
 import com.ducnt.chillshaker.dto.response.drinkCategory.DrinkCategoryResponse;
 import com.ducnt.chillshaker.exception.ExistDataException;
 import com.ducnt.chillshaker.exception.NotFoundException;
@@ -45,7 +45,7 @@ public class DrinkCategoryService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public DrinkCategoryResponse updateDrinkCategory(UUID id, DrinkCategoryUpdationRequest request) {
+    public DrinkCategoryResponse updateDrinkCategory(UUID id, DrinkCategoryUpdateRequest request) {
         DrinkCategory drinkCategory = drinkCategoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Drink Category is not found"));
 

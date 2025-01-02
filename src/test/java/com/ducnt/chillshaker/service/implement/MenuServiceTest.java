@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.menu.MenuCreationRequest;
-import com.ducnt.chillshaker.dto.request.menu.MenuUpdationRequest;
+import com.ducnt.chillshaker.dto.request.menu.MenuUpdateRequest;
 import com.ducnt.chillshaker.dto.response.menu.MenuResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.NotFoundException;
@@ -107,7 +107,7 @@ class MenuServiceTest {
     @Test
     void updateMenu_Success() throws IOException {
         // Arrange
-        MenuUpdationRequest request = new MenuUpdationRequest();
+        MenuUpdateRequest request = new MenuUpdateRequest();
         request.setNewfiles(mockFiles);
         request.setOldUrls(Arrays.asList("old1.jpg", "old2.jpg"));
 
@@ -134,7 +134,7 @@ class MenuServiceTest {
     @Test
     void updateMenu_NotFound() {
         // Arrange
-        MenuUpdationRequest request = new MenuUpdationRequest();
+        MenuUpdateRequest request = new MenuUpdateRequest();
         when(menuRepository.findById(menuId)).thenReturn(Optional.empty());
 
         // Act & Assert

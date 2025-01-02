@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.tableType.TableTypeCreationRequest;
-import com.ducnt.chillshaker.dto.request.tableType.TableTypeUpdationRequest;
+import com.ducnt.chillshaker.dto.request.tableType.TableTypeUpdateRequest;
 import com.ducnt.chillshaker.dto.response.tableType.TableTypeResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -59,7 +59,7 @@ public class TableTypeService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public TableTypeResponse updateTableType(UUID id, TableTypeUpdationRequest request) {
+    public TableTypeResponse updateTableType(UUID id, TableTypeUpdateRequest request) {
         try {
             TableType tableType = tableTypeRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("BarTable Type is not found"));

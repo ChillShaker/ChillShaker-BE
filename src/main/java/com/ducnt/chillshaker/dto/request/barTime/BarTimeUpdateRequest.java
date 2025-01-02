@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BarTimeUpdationRequest {
+public class BarTimeUpdateRequest {
     int dayOfWeek;
     LocalTime startTime;
     LocalTime endTime;

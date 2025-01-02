@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.dto.request.tableType;
+package com.ducnt.chillshaker.dto.request.drink;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -10,19 +10,21 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TableTypeUpdationRequest {
-    @Size(min = 6, message = "BarTable Type's name must be at least 6 character")
+public class DrinkUpdateRequest {
+    @Size(min = 5, message = "Name must be at least 5 character")
     String name;
-    @Size(min = 6, message = "BarTable Type's description must be at least 6 character")
+    @Size(min = 12, message = "Description must be at least 12 character")
     String description;
-    @Min(value = 1, message = "BarTable Type's limit of people must be at least 1")
-    int limitOfPeople;
-
+    @Min(value = 1000, message = "Price must be at least 1000")
+    double price;
+    UUID drinkCategoryId;
+    boolean status;
     List<String> oldFileUrls;
     List<MultipartFile> newFiles;
 }
