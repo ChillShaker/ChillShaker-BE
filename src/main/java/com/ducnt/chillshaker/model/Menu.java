@@ -18,6 +18,8 @@ public class Menu extends BaseModel{
      String name;
      String description;
      String images;
+     Double price;
+     boolean status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bar_id", referencedColumnName = "id")
