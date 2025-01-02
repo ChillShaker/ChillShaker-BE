@@ -1,9 +1,13 @@
 package com.ducnt.chillshaker.service.implement;
 
+import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
 import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
 import com.ducnt.chillshaker.dto.request.authentication.LogoutRequest;
 import com.ducnt.chillshaker.dto.request.authentication.RefreshRequest;
+import com.ducnt.chillshaker.dto.request.authentication.SignUpRequest;
+import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.authentication.AuthenticationResponse;
+import com.ducnt.chillshaker.enums.RoleEnum;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
@@ -13,6 +17,7 @@ import com.ducnt.chillshaker.model.Role;
 import com.ducnt.chillshaker.repository.AccountRepository;
 import com.ducnt.chillshaker.repository.GenericSpecification;
 import com.ducnt.chillshaker.repository.InvalidationTokenRepository;
+import com.ducnt.chillshaker.repository.RoleRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -22,18 +27,17 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.Date;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +45,8 @@ import java.util.UUID;
 public class AuthenticationService {
     AccountRepository accountRepository;
     InvalidationTokenRepository invalidationTokenRepository;
-    GenericSpecification<Account> accountGenericSpecification;
+    ModelMapper modelMapper;
+    RoleRepository roleRepository;
 
     @NonFinal
     @Value("${jwt.jwt-signature-key}")
@@ -192,5 +197,33 @@ public class AuthenticationService {
             throw new CustomException(ErrorResponse.UNAUTHENTICATED);
 
         return signedJWT;
+    }
+
+    @Transactional
+    public AuthenticationResponse signUp(SignUpRequest request) {
+        try {
+            List<Role> roles = roleRepository.findAllByName(String.valueOf(RoleEnum.CUSTOMER));
+
+            if (accountRepository.existsByEmail(request.getEmail()))
+                throw new CustomException(ErrorResponse.DATA_EXISTED);
+
+            PasswordEncoder bcrypt = new BCryptPasswordEncoder(10);
+
+            Account account = modelMapper.map(request, Account.class);
+            account.setPassword(bcrypt.encode(request.getPassword()));
+            account.setRoles(roles);
+
+            accountRepository.save(account);
+
+            var accessToken = generateAccessToken(account);
+            var refreshToken = generateRefreshToken(account);
+            return AuthenticationResponse
+                    .builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } catch (Exception e) {
+            throw new CustomException(ErrorResponse.INTERNAL_SERVER);
+        }
     }
 }

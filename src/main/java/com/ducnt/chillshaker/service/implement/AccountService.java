@@ -3,6 +3,7 @@ package com.ducnt.chillshaker.service.implement;
 import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
 import com.ducnt.chillshaker.dto.request.account.AccountUpdateRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
+import com.ducnt.chillshaker.enums.RoleEnum;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
@@ -64,7 +65,7 @@ public class AccountService {
     @Transactional
     public AccountResponse createAccount(AccountCreationRequest request) throws Exception {
         try {
-            Role role = Role.builder().name(Role.RoleName.USER.name()).build();
+            Role role = Role.builder().name(RoleEnum.CUSTOMER.name()).build();
             HashSet<Role> roles = new HashSet<>();
             roles.add(role);
 
