@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.config;
 
+import com.ducnt.chillshaker.enums.RoleEnum;
 import com.ducnt.chillshaker.model.Account;
 import com.ducnt.chillshaker.model.DrinkCategory;
 import com.ducnt.chillshaker.model.Role;
@@ -30,8 +31,8 @@ public class ApplicationInitConfig {
     ApplicationRunner applicationRunner(AccountRepository accountRepository, DrinkCategoryRepository drinkCategoryRepository) {
         return args -> {
           if(accountRepository.findByEmail("admin@chillshaker.com").isEmpty()) {
-              Role adminRole = Role.builder().name(Role.RoleName.ADMIN.name()).build();
-              Role customerRole = Role.builder().name(Role.RoleName.USER.name()).build();
+              Role adminRole = Role.builder().name(RoleEnum.ADMIN.name()).build();
+              Role customerRole = Role.builder().name(RoleEnum.CUSTOMER.name()).build();
               Collection<Role> adminRoles = new HashSet<>();
               adminRoles.add(adminRole);
 
