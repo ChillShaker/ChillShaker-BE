@@ -5,8 +5,10 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,4 +32,10 @@ public class Account extends BaseModel{
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     Collection<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<Payment> payment = new ArrayList<>();
 }

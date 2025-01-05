@@ -1,0 +1,11 @@
+package com.ducnt.chillshaker.repository;
+
+import com.ducnt.chillshaker.model.BookingTable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface BookingTableRepository extends JpaRepository<BookingTable, UUID> {
+}

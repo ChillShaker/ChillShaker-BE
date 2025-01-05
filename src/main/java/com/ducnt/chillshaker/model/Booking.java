@@ -1,11 +1,14 @@
 package com.ducnt.chillshaker.model;
 
+import com.ducnt.chillshaker.enums.BookingTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -25,23 +28,27 @@ public class Booking extends BaseModel {
     UUID checkInStaffId;
     UUID checkOutStaffId;
     int numberOfPeople;
-    LocalDate expireAt;
+    LocalDateTime expireAt;
     int status;
+    BookingTypeEnum bookingType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bar_id", referencedColumnName = "id")
     Bar bar;
 
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<BookingTable> bookingTables = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<BookingDrink> bookingDrinks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    Collection<BookingMenu> bookingMenus = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_type_id", referencedColumnName = "id")
-    BookingType bookingType;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    Account account;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    Collection<BookingTable> bookingTables;
-
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    Collection<BookingDrink> bookingDrinks;
-
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    Collection<BookingMenu> bookingMenus;
+    @OneToOne(fetch = FetchType.LAZY)
+    Payment payment;
 }

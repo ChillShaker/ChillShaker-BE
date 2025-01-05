@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.dto.response.tableType;
+package com.ducnt.chillshaker.dto.request.booking;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,14 +9,10 @@ import lombok.experimental.FieldDefaults;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TableTypeResponse {
-    UUID id;
-    String name;
-    String description;
-    int limitOfPeople;
-    double depositAmount;
-    String image;
+public class BookingDrinkRequest {
+    UUID drinkId;
+    int quantity;
 }

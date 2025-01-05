@@ -20,6 +20,7 @@ public class TableType extends BaseModel{
     String name;
     String description;
     int limitOfPeople;
+    double depositAmount;
     String image;
 
     @OneToMany(mappedBy = "tableType", cascade = CascadeType.ALL)

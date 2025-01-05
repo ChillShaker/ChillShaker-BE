@@ -22,7 +22,7 @@ public class TableTypeUpdateRequest {
     String description;
     @Min(value = 1, message = "BarTable Type's limit of people must be at least 1")
     int limitOfPeople;
-
+    double depositAmount;
     List<String> oldFileUrls;
     List<MultipartFile> newFiles;
 }
