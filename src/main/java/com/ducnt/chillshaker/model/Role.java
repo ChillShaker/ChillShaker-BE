@@ -18,5 +18,5 @@ public class Role extends BaseModel{
      String name;
 
     @ManyToMany(mappedBy = "roles")
-     Collection<Account> accounts = new HashSet<>();
+    Collection<Account> accounts = new HashSet<>();
 }

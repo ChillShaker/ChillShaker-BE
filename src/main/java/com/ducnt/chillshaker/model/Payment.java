@@ -1,9 +1,6 @@
 package com.ducnt.chillshaker.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -26,11 +23,10 @@ public class Payment extends BaseModel {
     int status;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "account_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     Account account;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "booking_id")
     Booking booking;
 }
