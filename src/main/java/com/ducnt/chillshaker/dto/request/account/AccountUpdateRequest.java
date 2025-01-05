@@ -1,6 +1,5 @@
 package com.ducnt.chillshaker.dto.request.account;
 
-import com.ducnt.chillshaker.validator.DobConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -8,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class AccountUpdationRequest {
+public class AccountUpdateRequest {
     @Size(min = 4, message = "FULLNAME_INVALID")
     String fullName;
     @Email(message = "EMAIL_INVALID")

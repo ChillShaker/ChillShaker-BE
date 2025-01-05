@@ -17,24 +17,11 @@ import java.util.Collection;
 public class Menu extends BaseModel{
      String name;
      String description;
+     String images;
+     Double price;
+     boolean status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bar_id", referencedColumnName = "id")
      Bar bar;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "menu_drink",
-            joinColumns = @JoinColumn(name = "menu_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id")
-    )
-     Collection<Drink> drinks = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "menu_food",
-            joinColumns = @JoinColumn(name = "menu_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "drink_id", referencedColumnName = "id")
-    )
-    Collection<Food> foods = new ArrayList<>();
 }

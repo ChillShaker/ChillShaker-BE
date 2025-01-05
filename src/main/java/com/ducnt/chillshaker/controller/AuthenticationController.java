@@ -3,6 +3,7 @@ package com.ducnt.chillshaker.controller;
 import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
 import com.ducnt.chillshaker.dto.request.authentication.LogoutRequest;
 import com.ducnt.chillshaker.dto.request.authentication.RefreshRequest;
+import com.ducnt.chillshaker.dto.request.authentication.SignUpRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
@@ -22,9 +23,19 @@ import java.text.ParseException;
 @RequestMapping("${api.base-url}")
 public class AuthenticationController {
     AuthenticationService authenticationService;
+
     @PostMapping("/log-in")
     public ApiResponse login(@RequestBody AuthenticationRequest request) {
         var responseData = authenticationService.authenticate(request);
+        return ApiResponse
+                .builder()
+                .data(responseData)
+                .build();
+    }
+
+    @PostMapping("/sign-up")
+    public ApiResponse signUp(@RequestBody SignUpRequest request) {
+        var responseData = authenticationService.signUp(request);
         return ApiResponse
                 .builder()
                 .data(responseData)
@@ -36,6 +47,7 @@ public class AuthenticationController {
         authenticationService.logout(request);
         return ApiResponse.builder().build();
     }
+
 
     @PostMapping("/refresh")
     public ApiResponse refresh(@RequestBody RefreshRequest request) throws ParseException, JOSEException {

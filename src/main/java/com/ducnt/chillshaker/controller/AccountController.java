@@ -1,11 +1,10 @@
 package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountUpdateRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AccountService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,7 +63,7 @@ public class AccountController {
     }
 
     @PutMapping("/account/{id}")
-    public ApiResponse updateAccount(@PathVariable("id") UUID id, @RequestBody @Valid AccountUpdationRequest request) throws Exception {
+    public ApiResponse updateAccount(@PathVariable("id") UUID id, @RequestBody @Valid AccountUpdateRequest request) throws Exception {
         AccountResponse accountResponse = accountService.updateAccount(id, request);
         return ApiResponse.builder()
                 .message("Updated account successfully")

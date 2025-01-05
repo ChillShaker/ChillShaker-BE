@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.account.AccountUpdationRequest;
+import com.ducnt.chillshaker.dto.request.account.AccountUpdateRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -553,7 +553,7 @@ class AccountServiceDiffblueTest {
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount() throws Exception {
@@ -581,13 +581,13 @@ class AccountServiceDiffblueTest {
         UUID id = UUID.randomUUID();
 
         // Act and Assert
-        assertThrows(Exception.class, () -> accountService.updateAccount(id, new AccountUpdationRequest()));
+        assertThrows(Exception.class, () -> accountService.updateAccount(id, new AccountUpdateRequest()));
         verify(accountRepository).findById(isA(UUID.class));
     }
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount2() throws Exception {
@@ -604,13 +604,13 @@ class AccountServiceDiffblueTest {
         UUID id = UUID.randomUUID();
 
         // Act and Assert
-        assertThrows(NotFoundException.class, () -> accountService.updateAccount(id, new AccountUpdationRequest()));
+        assertThrows(NotFoundException.class, () -> accountService.updateAccount(id, new AccountUpdateRequest()));
         verify(accountRepository).findById(isA(UUID.class));
     }
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount3() throws Exception {
@@ -637,13 +637,13 @@ class AccountServiceDiffblueTest {
         UUID id = UUID.randomUUID();
 
         // Act and Assert
-        assertThrows(Exception.class, () -> accountService.updateAccount(id, new AccountUpdationRequest()));
+        assertThrows(Exception.class, () -> accountService.updateAccount(id, new AccountUpdateRequest()));
         verify(accountRepository).findById(isA(UUID.class));
     }
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount4() throws Exception {
@@ -684,7 +684,7 @@ class AccountServiceDiffblueTest {
         UUID id = UUID.randomUUID();
 
         // Act
-        AccountResponse actualUpdateAccountResult = accountService.updateAccount(id, new AccountUpdationRequest());
+        AccountResponse actualUpdateAccountResult = accountService.updateAccount(id, new AccountUpdateRequest());
 
         // Assert
         verify(accountRepository).findById(isA(UUID.class));
@@ -699,7 +699,7 @@ class AccountServiceDiffblueTest {
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount5() throws Exception {
@@ -732,7 +732,7 @@ class AccountServiceDiffblueTest {
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount6() throws Exception {
@@ -761,14 +761,14 @@ class AccountServiceDiffblueTest {
         UUID id = UUID.randomUUID();
 
         // Act and Assert
-        assertThrows(Exception.class, () -> accountService.updateAccount(id, new AccountUpdationRequest()));
+        assertThrows(Exception.class, () -> accountService.updateAccount(id, new AccountUpdateRequest()));
         verify(accountRepository).findById(isA(UUID.class));
         verify(accountRepository).save(isA(Account.class));
     }
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount7() throws Exception {
@@ -797,14 +797,14 @@ class AccountServiceDiffblueTest {
         UUID id = UUID.randomUUID();
 
         // Act and Assert
-        assertThrows(NotFoundException.class, () -> accountService.updateAccount(id, new AccountUpdationRequest()));
+        assertThrows(NotFoundException.class, () -> accountService.updateAccount(id, new AccountUpdateRequest()));
         verify(accountRepository).findById(isA(UUID.class));
         verify(accountRepository).save(isA(Account.class));
     }
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount8() throws Exception {
@@ -846,7 +846,7 @@ class AccountServiceDiffblueTest {
 
         HashSet<String> roles = new HashSet<>();
         roles.add("foo");
-        AccountUpdationRequest request = AccountUpdationRequest.builder()
+        AccountUpdateRequest request = AccountUpdateRequest.builder()
                 .email("jane.doe@example.org")
                 .fullName("Dr Jane Doe")
                 .password("iloveyou")
@@ -870,7 +870,7 @@ class AccountServiceDiffblueTest {
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     void testUpdateAccount9() throws Exception {
@@ -922,7 +922,7 @@ class AccountServiceDiffblueTest {
 
         HashSet<String> roles2 = new HashSet<>();
         roles2.add("foo");
-        AccountUpdationRequest request = AccountUpdationRequest.builder()
+        AccountUpdateRequest request = AccountUpdateRequest.builder()
                 .email("jane.doe@example.org")
                 .fullName("Dr Jane Doe")
                 .password("iloveyou")
@@ -946,7 +946,7 @@ class AccountServiceDiffblueTest {
 
     /**
      * Method under test:
-     * {@link AccountService#updateAccount(UUID, AccountUpdationRequest)}
+     * {@link AccountService#updateAccount(UUID, AccountUpdateRequest)}
      */
     @Test
     @Disabled("TODO: Complete this test")
@@ -964,7 +964,7 @@ class AccountServiceDiffblueTest {
         UUID id = UUID.randomUUID();
 
         // Act
-        accountService.updateAccount(id, new AccountUpdationRequest());
+        accountService.updateAccount(id, new AccountUpdateRequest());
     }
 
     /**

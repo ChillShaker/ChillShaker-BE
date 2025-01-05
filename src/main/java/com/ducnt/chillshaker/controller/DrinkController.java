@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.drink.DrinkCreationRequest;
-import com.ducnt.chillshaker.dto.request.drink.DrinkUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drink.DrinkUpdateRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.dto.response.drink.DrinkResponse;
 import com.ducnt.chillshaker.service.implement.DrinkService;
@@ -35,7 +35,7 @@ public class DrinkController {
     }
 
     @PutMapping("/drink/{id}")
-    public ApiResponse updateDrink(@PathVariable("id")UUID id, @Valid @ModelAttribute DrinkUpdationRequest request) throws Exception {
+    public ApiResponse updateDrink(@PathVariable("id")UUID id, @Valid @ModelAttribute DrinkUpdateRequest request) throws Exception {
         DrinkResponse drinkResponse = drinkService.updateDrink(id, request);
         return ApiResponse
                 .builder()
@@ -52,10 +52,11 @@ public class DrinkController {
             @RequestParam(required = false, defaultValue = "") String includeProperties,
             @RequestParam(required = false, defaultValue = "name") String attribute,
             @RequestParam(required = false, defaultValue = "0") Integer pageIndex,
-            @RequestParam(required = false, defaultValue = "10") Integer pageSize
+            @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false, defaultValue = "") String sort
     ) {
         Page<DrinkResponse> drinkResponsePage = drinkService
-                .getAllDrinks(q, includeProperties, attribute, pageIndex, pageSize);
+                .getAllDrinks(q, includeProperties, attribute, pageIndex, pageSize, sort);
         return ApiResponse
                 .builder()
                 .code(HttpStatus.OK.value())

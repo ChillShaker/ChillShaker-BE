@@ -1,7 +1,7 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryCreationRequest;
-import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdateRequest;
 import com.ducnt.chillshaker.dto.response.drinkCategory.DrinkCategoryResponse;
 import com.ducnt.chillshaker.exception.ExistDataException;
 import com.ducnt.chillshaker.exception.NotFoundException;
@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class DrinkCategoryService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public DrinkCategoryResponse updateDrinkCategory(UUID id, DrinkCategoryUpdationRequest request) {
+    public DrinkCategoryResponse updateDrinkCategory(UUID id, DrinkCategoryUpdateRequest request) {
         DrinkCategory drinkCategory = drinkCategoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Drink Category is not found"));
 
@@ -66,12 +67,17 @@ public class DrinkCategoryService {
                                                            String includeProperties,
                                                            String attribute,
                                                            Integer pageIndex,
-                                                           Integer pageSize) {
+                                                           Integer pageSize,
+                                                           String sort
+    ) {
+
+
         PageRequest pageRequest = PageRequest.of(
                 pageIndex > 0 ? pageIndex - 1 : 0,
-                pageSize
+                pageSize,
+                sort.equals("desc") ? Sort.by(Sort.Direction.DESC, attribute) : Sort.by(Sort.Direction.ASC, attribute)
         );
-        Specification<DrinkCategory> filters = genericSpecification.getFilters(q, includeProperties, attribute, "");
+        Specification<DrinkCategory> filters = genericSpecification.getFilters(q, includeProperties, attribute);
 
         Page<DrinkCategory> drinkCategoryPage = drinkCategoryRepository.findAll(filters, pageRequest);
 

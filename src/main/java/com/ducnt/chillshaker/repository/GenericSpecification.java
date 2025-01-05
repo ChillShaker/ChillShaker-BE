@@ -17,8 +17,7 @@ import java.util.function.Function;
 public class GenericSpecification<T> {
     public Specification<T> getFilters(String q,
                                        String includeProperties,
-                                       String attribute,
-                                       String orderBy) {
+                                       String attribute) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             assert query != null;
@@ -29,15 +28,8 @@ public class GenericSpecification<T> {
                 );
             }
             if(includeProperties != null && !includeProperties.isBlank()) {
-                for (String includeProperty : includeProperties.split("&")) {
+                for (String includeProperty : includeProperties.split(",")) {
                     root.fetch(includeProperty, JoinType.LEFT);
-                }
-            }
-            if(orderBy != null && !orderBy.isEmpty()) {
-                if(SortDirection.interpret(orderBy) == SortDirection.DESCENDING) {
-                    criteriaBuilder.desc(root.get(attribute));
-                } else {
-                    criteriaBuilder.asc(root.get(attribute));
                 }
             }
 

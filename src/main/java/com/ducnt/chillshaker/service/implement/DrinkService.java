@@ -1,9 +1,10 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.drink.DrinkCreationRequest;
-import com.ducnt.chillshaker.dto.request.drink.DrinkUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drink.DrinkUpdateRequest;
 import com.ducnt.chillshaker.dto.response.drink.DrinkResponse;
 import com.ducnt.chillshaker.exception.CustomException;
+import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.ExistDataException;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.Drink;
@@ -12,12 +13,9 @@ import com.ducnt.chillshaker.repository.DrinkCategoryRepository;
 import com.ducnt.chillshaker.repository.DrinkRepository;
 import com.ducnt.chillshaker.repository.GenericSpecification;
 import com.ducnt.chillshaker.service.thirdparty.CloudinaryService;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Root;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.query.SortDirection;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -71,7 +69,7 @@ public class DrinkService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public DrinkResponse updateDrink(UUID id, DrinkUpdationRequest request) throws Exception {
+    public DrinkResponse updateDrink(UUID id, DrinkUpdateRequest request) throws Exception {
         try {
             Drink drink = drinkRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Drink is not found"));
@@ -101,31 +99,44 @@ public class DrinkService {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public boolean deleteDrink(UUID id) {
-        Drink drink = drinkRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Drink is not found"));
-        drinkRepository.delete(drink);
-        return true;
+        try {
+            Drink drink = drinkRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Drink is not found"));
+            drink.setStatus(false);
+            drinkRepository.save(drink);
+            return true;
+        } catch (NotFoundException ex) {
+            throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            throw new CustomException(ErrorResponse.INTERNAL_SERVER);
+        }
     }
 
-    public Page<DrinkResponse> getAllDrinks(String q,
-                                            String includeProperties,
-                                            String attribute,
-                                            Integer pageIndex,
-                                            Integer pageSize) {
+    public Page<DrinkResponse> getAllDrinks(
+            String q,
+            String includeProperties,
+            String attribute,
+            Integer pageIndex,
+            Integer pageSize,
+            String sort
+    ) {
         PageRequest pageRequest = PageRequest.of(
                 pageIndex > 0 ? pageIndex - 1 : 0,
-                pageSize
+                pageSize,
+                sort.equals("desc") ? Sort.by(Sort.Direction.DESC, attribute) : Sort.by(Sort.Direction.ASC, attribute)
         );
 
 
-        var filters = drinkGenericSpecification.getFilters(q, includeProperties, attribute, "");
+        var filters = drinkGenericSpecification.getFilters(q, includeProperties, attribute);
 
-        Page<Drink> drinkPage = drinkRepository.findAll(filters ,pageRequest);
+        long totalOfElement = drinkRepository.count();
+
+        Page<Drink> drinkPage = drinkRepository.findAllByStatusFalse(pageRequest);
 
         List<DrinkResponse> drinkResponses = drinkPage.getContent().stream()
                 .map((element) -> modelMapper.map(element, DrinkResponse.class))
                 .toList();
-        return new PageImpl<>(drinkResponses, drinkPage.getPageable(), drinkPage.getNumberOfElements());
+        return new PageImpl<>(drinkResponses, drinkPage.getPageable(), totalOfElement);
     }
 
     public DrinkResponse getDrinkById(UUID id) {

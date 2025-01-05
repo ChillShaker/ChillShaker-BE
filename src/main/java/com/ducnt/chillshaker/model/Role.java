@@ -18,10 +18,5 @@ public class Role extends BaseModel{
      String name;
 
     @ManyToMany(mappedBy = "roles")
-     Collection<Account> accounts = new HashSet<>();
-
-    public enum RoleName {
-        ADMIN,
-        USER
-    }
+    Collection<Account> accounts = new HashSet<>();
 }

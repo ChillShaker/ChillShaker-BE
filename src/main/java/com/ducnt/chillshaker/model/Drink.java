@@ -21,9 +21,6 @@ public class Drink extends BaseModel {
      String image;
      boolean status;
 
-    @ManyToMany(mappedBy = "drinks")
-     Collection<Menu> menus = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drinkCategory_id", referencedColumnName = "id")
      DrinkCategory drinkCategory;

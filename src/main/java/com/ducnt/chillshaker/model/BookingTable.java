@@ -21,5 +21,5 @@ public class BookingTable extends BaseModel{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_id", referencedColumnName = "id")
-    Table table;
+    BarTable barTable;
 }

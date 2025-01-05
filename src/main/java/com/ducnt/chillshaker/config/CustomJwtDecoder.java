@@ -2,7 +2,6 @@ package com.ducnt.chillshaker.config;
 
 import com.ducnt.chillshaker.service.implement.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
-import jakarta.websocket.Decoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;

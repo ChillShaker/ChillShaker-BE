@@ -1,10 +1,9 @@
 package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryCreationRequest;
-import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdationRequest;
+import com.ducnt.chillshaker.dto.request.drinkCategory.DrinkCategoryUpdateRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.DrinkCategoryService;
-import jakarta.annotation.security.PermitAll;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,7 +32,7 @@ public class DrinkCategoryController {
 
     @PutMapping("/drink-category/{id}")
     public ApiResponse updateDrinkCategory(@PathVariable("id")UUID id,
-                                           @RequestBody DrinkCategoryUpdationRequest request) {
+                                           @RequestBody DrinkCategoryUpdateRequest request) {
         var responseData = drinkCategoryService.updateDrinkCategory(id, request);
         return ApiResponse
                 .builder()
@@ -60,9 +59,10 @@ public class DrinkCategoryController {
             @RequestParam(required = false, defaultValue = "") String includeProperties,
             @RequestParam(required = false, defaultValue = "name") String attribute,
             @RequestParam(required = false, defaultValue = "0") Integer pageIndex,
-            @RequestParam(required = false, defaultValue = "10") Integer pageSize
+            @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false, defaultValue = "") String sort
     ) {
-        var responseData = drinkCategoryService.getAllDrinkCategory(q, includeProperties, attribute, pageIndex, pageSize);
+        var responseData = drinkCategoryService.getAllDrinkCategory(q, includeProperties, attribute, pageIndex, pageSize, sort);
         return ApiResponse
                 .builder()
                 .message("Data loaded")

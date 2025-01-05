@@ -1,7 +1,6 @@
 package com.ducnt.chillshaker.dto.request.drink;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DrinkUpdationRequest {
+public class DrinkUpdateRequest {
     @Size(min = 5, message = "Name must be at least 5 character")
     String name;
     @Size(min = 12, message = "Description must be at least 12 character")
