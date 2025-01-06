@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.model;
 
+import com.ducnt.chillshaker.enums.AccountStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,6 +25,7 @@ public class Account extends BaseModel{
     String phone;
     String address;
     LocalDate dob;
+    AccountStatusEnum status;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

@@ -7,6 +7,7 @@ import com.ducnt.chillshaker.dto.request.authentication.RefreshRequest;
 import com.ducnt.chillshaker.dto.request.authentication.SignUpRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.authentication.AuthenticationResponse;
+import com.ducnt.chillshaker.enums.AccountStatusEnum;
 import com.ducnt.chillshaker.enums.RoleEnum;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -18,6 +19,8 @@ import com.ducnt.chillshaker.repository.AccountRepository;
 import com.ducnt.chillshaker.repository.GenericSpecification;
 import com.ducnt.chillshaker.repository.InvalidationTokenRepository;
 import com.ducnt.chillshaker.repository.RoleRepository;
+import com.ducnt.chillshaker.service.thirdparty.EmailService;
+import com.ducnt.chillshaker.service.thirdparty.RedisService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -47,6 +50,8 @@ public class AuthenticationService {
     InvalidationTokenRepository invalidationTokenRepository;
     ModelMapper modelMapper;
     RoleRepository roleRepository;
+    EmailService emailService;
+    RedisService redisService;
 
     @NonFinal
     @Value("${jwt.jwt-signature-key}")
@@ -71,6 +76,13 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var account = accountRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
+
+        if (account.getStatus().equals(AccountStatusEnum.NOT_VERIFIED)) {
+            throw new CustomException(ErrorResponse.ACCOUNT_IS_NOT_VERIFIED);
+        }
+        if (account.getStatus().equals(AccountStatusEnum.INACTIVE)) {
+            throw new CustomException(ErrorResponse.ACCOUNT_IS_INACTIVE);
+        }
 
         PasswordEncoder bcrypt = new BCryptPasswordEncoder();
         boolean isAuthenticated = bcrypt.matches(request.getPassword(), account.getPassword());
@@ -200,7 +212,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public AuthenticationResponse signUp(SignUpRequest request) {
+    public boolean signUp(SignUpRequest request) {
         try {
             List<Role> roles = roleRepository.findAllByName(String.valueOf(RoleEnum.CUSTOMER));
 
@@ -212,17 +224,35 @@ public class AuthenticationService {
             Account account = modelMapper.map(request, Account.class);
             account.setPassword(bcrypt.encode(request.getPassword()));
             account.setRoles(roles);
+            account.setStatus(AccountStatusEnum.NOT_VERIFIED);
 
             accountRepository.save(account);
 
-            var accessToken = generateAccessToken(account);
-            var refreshToken = generateRefreshToken(account);
-            return AuthenticationResponse
-                    .builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
+            emailService.sendOtp(account.getEmail());
+
+            return true;
         } catch (Exception e) {
+            throw new CustomException(ErrorResponse.INTERNAL_SERVER);
+        }
+    }
+
+    @Transactional
+    public boolean verifyAccountWithOtp(String email, String otp) {
+        try {
+            Account account = accountRepository.findByEmail(email)
+                    .orElseThrow(() -> new NotFoundException("Account is not existed"));
+            String savedOTP = redisService.getOTP(email);
+            if(savedOTP != null && savedOTP.equals(otp)) {
+                redisService.deleteOTP(email);
+                account.setStatus(AccountStatusEnum.ACTIVE);
+                accountRepository.save(account);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NotFoundException ex) {
+            throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);
         }
     }
