@@ -16,8 +16,10 @@ public enum ErrorResponse {
     DOB_INVALID("Date of birth muse be at least {min}", HttpStatus.BAD_REQUEST),
     EMAIL_INVALID("Email must be a well-formed email address",  HttpStatus.BAD_REQUEST),
     PHONE_INVALID("Phone number is not in Vietnamese syntax", HttpStatus.BAD_REQUEST),
+    ACCOUNT_IS_NOT_VERIFIED("Account not verified otp please try again", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_IS_INACTIVE("Account has been deactivated please contact admin", HttpStatus.UNAUTHORIZED),
 
-    /** ERROR RESPONSE FOR **/
+    /** ERROR RESPONSE FOR FILE **/
     FILE_OVER_SIZE("Max file size is {min} MB", HttpStatus.BAD_REQUEST),
     IMAGE_FILE_INVALID("Only jpg, png, gif, bmp files are allowed or not empty file", HttpStatus.BAD_REQUEST),
 

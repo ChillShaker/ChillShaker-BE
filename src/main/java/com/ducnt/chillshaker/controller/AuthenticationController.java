@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.controller;
 
+import com.cloudinary.Api;
 import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
 import com.ducnt.chillshaker.dto.request.authentication.LogoutRequest;
 import com.ducnt.chillshaker.dto.request.authentication.RefreshRequest;
@@ -10,10 +11,8 @@ import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -38,7 +37,18 @@ public class AuthenticationController {
         var responseData = authenticationService.signUp(request);
         return ApiResponse
                 .builder()
-                .data(responseData)
+                .code(responseData ? HttpStatus.OK.value() : HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(responseData ? "OTP has been sent to your email!" : "Internal server error")
+                .build();
+    }
+
+    @PostMapping("/verify-otp")
+    public ApiResponse verifyOtp(@RequestParam String email, @RequestParam String otp) {
+        var responseData = authenticationService.verifyAccountWithOtp(email, otp);
+        return ApiResponse
+                .builder()
+                .code(responseData ? HttpStatus.OK.value() : HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(responseData ? "Account verified successfully please login" : "Internal server error")
                 .build();
     }
 
