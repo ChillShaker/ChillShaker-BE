@@ -1,10 +1,7 @@
 package com.ducnt.chillshaker.controller;
 
 import com.cloudinary.Api;
-import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
-import com.ducnt.chillshaker.dto.request.authentication.LogoutRequest;
-import com.ducnt.chillshaker.dto.request.authentication.RefreshRequest;
-import com.ducnt.chillshaker.dto.request.authentication.SignUpRequest;
+import com.ducnt.chillshaker.dto.request.authentication.*;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
@@ -23,7 +20,7 @@ import java.text.ParseException;
 public class AuthenticationController {
     AuthenticationService authenticationService;
 
-    @PostMapping("/log-in")
+    @PostMapping("/login")
     public ApiResponse login(@RequestBody AuthenticationRequest request) {
         var responseData = authenticationService.authenticate(request);
         return ApiResponse
@@ -32,9 +29,9 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/register")
     public ApiResponse signUp(@RequestBody SignUpRequest request) {
-        var responseData = authenticationService.signUp(request);
+        var responseData = authenticationService.register(request);
         return ApiResponse
                 .builder()
                 .code(responseData ? HttpStatus.OK.value() : HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -42,9 +39,9 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PostMapping("/verify-otp")
-    public ApiResponse verifyOtp(@RequestParam String email, @RequestParam String otp) {
-        var responseData = authenticationService.verifyAccountWithOtp(email, otp);
+    @PostMapping("/verify")
+    public ApiResponse verifyOtp(@RequestBody VerifyOtpRequest request) {
+        var responseData = authenticationService.verifyAccountWithOtp(request);
         return ApiResponse
                 .builder()
                 .code(responseData ? HttpStatus.OK.value() : HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -52,7 +49,7 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PostMapping("/log-out")
+    @PostMapping("/logout")
     public ApiResponse logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
         return ApiResponse.builder().build();
