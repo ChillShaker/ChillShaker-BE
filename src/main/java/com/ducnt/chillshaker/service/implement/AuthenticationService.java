@@ -1,16 +1,14 @@
 package com.ducnt.chillshaker.service.implement;
 
 import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
-import com.ducnt.chillshaker.dto.request.authentication.AuthenticationRequest;
-import com.ducnt.chillshaker.dto.request.authentication.LogoutRequest;
-import com.ducnt.chillshaker.dto.request.authentication.RefreshRequest;
-import com.ducnt.chillshaker.dto.request.authentication.SignUpRequest;
+import com.ducnt.chillshaker.dto.request.authentication.*;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.authentication.AuthenticationResponse;
 import com.ducnt.chillshaker.enums.AccountStatusEnum;
 import com.ducnt.chillshaker.enums.RoleEnum;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
+import com.ducnt.chillshaker.exception.ExistDataException;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.Account;
 import com.ducnt.chillshaker.model.InvalidationToken;
@@ -212,12 +210,12 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public boolean signUp(SignUpRequest request) {
+    public boolean register(SignUpRequest request) {
         try {
             List<Role> roles = roleRepository.findAllByName(String.valueOf(RoleEnum.CUSTOMER));
 
             if (accountRepository.existsByEmail(request.getEmail()))
-                throw new CustomException(ErrorResponse.DATA_EXISTED);
+                throw new ExistDataException("Email is existed");
 
             PasswordEncoder bcrypt = new BCryptPasswordEncoder(10);
 
@@ -231,19 +229,21 @@ public class AuthenticationService {
             emailService.sendOtp(account.getEmail());
 
             return true;
+        } catch (ExistDataException ex) {
+            throw new ExistDataException(ex.getMessage());
         } catch (Exception e) {
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);
         }
     }
 
     @Transactional
-    public boolean verifyAccountWithOtp(String email, String otp) {
+    public boolean verifyAccountWithOtp(VerifyOtpRequest request) {
         try {
-            Account account = accountRepository.findByEmail(email)
+            Account account = accountRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new NotFoundException("Account is not existed"));
-            String savedOTP = redisService.getOTP(email);
-            if(savedOTP != null && savedOTP.equals(otp)) {
-                redisService.deleteOTP(email);
+            String savedOTP = redisService.getOTP(request.getEmail());
+            if(savedOTP != null && savedOTP.equals(request.getOtp())) {
+                redisService.deleteOTP(request.getEmail());
                 account.setStatus(AccountStatusEnum.ACTIVE);
                 accountRepository.save(account);
                 return true;
