@@ -1,6 +1,5 @@
 package com.ducnt.chillshaker.controller;
 
-import com.cloudinary.Api;
 import com.ducnt.chillshaker.dto.request.barTable.BarTableCreationRequest;
 import com.ducnt.chillshaker.dto.request.barTable.BarTableStatusRequest;
 import com.ducnt.chillshaker.dto.request.barTable.BarTableUpdateRequest;

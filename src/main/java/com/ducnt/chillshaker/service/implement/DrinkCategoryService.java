@@ -27,11 +27,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class DrinkCategoryService {
+public class DrinkCategoryService implements com.ducnt.chillshaker.service.interfaces.IDrinkCategoryService {
     DrinkCategoryRepository drinkCategoryRepository;
     ModelMapper modelMapper;
     GenericSpecification<DrinkCategory> genericSpecification;
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public DrinkCategoryResponse createDrinkCategory(DrinkCategoryCreationRequest request) {
@@ -43,6 +44,7 @@ public class DrinkCategoryService {
         return modelMapper.map(drinkCategory, DrinkCategoryResponse.class);
     }
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public DrinkCategoryResponse updateDrinkCategory(UUID id, DrinkCategoryUpdateRequest request) {
@@ -54,6 +56,7 @@ public class DrinkCategoryService {
         return modelMapper.map(drinkCategory, DrinkCategoryResponse.class);
     }
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteDrinkCategory(UUID id) {
@@ -63,6 +66,7 @@ public class DrinkCategoryService {
         return true;
     }
 
+    @Override
     public Page<DrinkCategoryResponse> getAllDrinkCategory(String q,
                                                            String includeProperties,
                                                            String attribute,
@@ -88,6 +92,7 @@ public class DrinkCategoryService {
                 drinkCategoryPage.getNumberOfElements());
     }
 
+    @Override
     public DrinkCategoryResponse getById(UUID id) {
         DrinkCategory drinkCategory = drinkCategoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Drink Category is not found"));

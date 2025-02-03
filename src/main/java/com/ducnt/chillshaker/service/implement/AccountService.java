@@ -12,6 +12,7 @@ import com.ducnt.chillshaker.model.Account;
 import com.ducnt.chillshaker.model.Role;
 import com.ducnt.chillshaker.repository.AccountRepository;
 import com.ducnt.chillshaker.repository.RoleRepository;
+import com.ducnt.chillshaker.service.interfaces.IAccountService;
 import com.ducnt.chillshaker.service.thirdparty.CloudinaryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +35,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class AccountService {
+public class AccountService implements IAccountService {
     AccountRepository accountRepository;
     RoleRepository roleRepository;
     ModelMapper modelMapper;
     PasswordEncoder passwordEncoder;
     CloudinaryService cloudinaryService;
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<AccountResponse> getAllAccounts() {
         return accountRepository.findAll()
@@ -49,12 +51,14 @@ public class AccountService {
                 .toList();
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public AccountResponse getAccountById(UUID id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found"));
         return modelMapper.map(account, AccountResponse.class);
     }
 
+    @Override
     public AccountResponse getMyInfo() {
         SecurityContext contextHolder = SecurityContextHolder.getContext();
         String email = contextHolder.getAuthentication().getName();
@@ -65,6 +69,7 @@ public class AccountService {
         return modelMapper.map(account, AccountResponse.class);
     }
 
+    @Override
     public AccountResponse updateMyInfo(ProfileUpdateRequest request) {
         try {
             SecurityContext contextHolder = SecurityContextHolder.getContext();
@@ -105,6 +110,7 @@ public class AccountService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public AccountResponse createAccount(AccountCreationRequest request) throws Exception {
@@ -137,6 +143,7 @@ public class AccountService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public AccountResponse updateAccount(UUID id, AccountUpdateRequest request) throws Exception {
@@ -157,6 +164,7 @@ public class AccountService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public boolean deleteAccount(UUID id) throws Exception {

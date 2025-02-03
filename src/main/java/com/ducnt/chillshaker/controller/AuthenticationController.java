@@ -1,6 +1,5 @@
 package com.ducnt.chillshaker.controller;
 
-import com.cloudinary.Api;
 import com.ducnt.chillshaker.dto.request.authentication.*;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AuthenticationService;

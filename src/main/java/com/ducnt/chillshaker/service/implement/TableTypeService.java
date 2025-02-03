@@ -30,12 +30,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class TableTypeService {
+public class TableTypeService implements com.ducnt.chillshaker.service.interfaces.ITableTypeService {
     TableTypeRepository tableTypeRepository;
     ModelMapper modelMapper;
     CloudinaryService cloudinaryService;
     GenericSpecification<TableType> genericSpecification;
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public TableTypeResponse createTableType(TableTypeCreationRequest request) {
@@ -57,6 +58,7 @@ public class TableTypeService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public TableTypeResponse updateTableType(UUID id, TableTypeUpdateRequest request) {
@@ -80,6 +82,7 @@ public class TableTypeService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public boolean deleteTableType(UUID id) {
@@ -95,6 +98,7 @@ public class TableTypeService {
        }
     }
 
+    @Override
     public Page<TableTypeResponse> getAllTableTypes(
             String q,
             String includeProperties,
@@ -125,6 +129,7 @@ public class TableTypeService {
         }
     }
 
+    @Override
     public TableTypeResponse getTableTypeById(UUID id) {
         try {
             TableType tableType = tableTypeRepository.findById(id)
