@@ -25,4 +25,16 @@ public class RedisService {
     public void deleteOTP(String email) {
         redisTemplate.delete(email);
     }
+
+    public void saveBarTableStatus(String key, String barTableId, long duration) {
+        redisTemplate.opsForValue().set(key, barTableId, duration, TimeUnit.SECONDS);
+    }
+
+    public String getBarTableStatus(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    public void deleteBarTableStatus(String key) {
+        redisTemplate.delete(key);
+    }
 }

@@ -11,5 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, UUID>, JpaSpecificationExecutor<Menu> {
-    Page<Menu> findAllByStatusFalse(Pageable pageable);
+    Page<Menu> findAllByStatusTrue(Pageable pageable);
 }

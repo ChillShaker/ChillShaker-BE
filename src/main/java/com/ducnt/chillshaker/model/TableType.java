@@ -19,7 +19,7 @@ import java.util.Collection;
 public class TableType extends BaseModel{
     String name;
     String description;
-    int limitOfPeople;
+    int capacity;
     double depositAmount;
     String image;
 

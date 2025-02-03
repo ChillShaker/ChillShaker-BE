@@ -10,14 +10,20 @@ import org.springframework.http.HttpStatusCode;
 @NoArgsConstructor
 @Getter
 public enum ErrorResponse {
+    /** ERROR RESPONSE FOR BAR TABLE REAL-TIME**/
+    BAR_TABLE_IS_NOT_EMPTY("Bar tables are reserved or serving", HttpStatus.BAD_REQUEST),
+    BAR_TABLE_WITH_WRONG_USER_HOLD("Bar tables are reserved with wrong user", HttpStatus.BAD_REQUEST),
+    REDIS_STORE_FAIL("Redis can not store value", HttpStatus.CONFLICT),
     /** ERROR RESPONSE FOR ACCOUNT **/
     FULLNAME_INVALID("FullName must be at least {min} character ", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID("Password must be at least {min} character ", HttpStatus.BAD_REQUEST),
     DOB_INVALID("Date of birth muse be at least {min}", HttpStatus.BAD_REQUEST),
     EMAIL_INVALID("Email must be a well-formed email address",  HttpStatus.BAD_REQUEST),
     PHONE_INVALID("Phone number is not in Vietnamese syntax", HttpStatus.BAD_REQUEST),
-    ACCOUNT_IS_NOT_VERIFIED("Account not verified otp please try again", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_IS_NOT_VERIFIED("Account did not verified otp please try again", HttpStatus.UNAUTHORIZED),
     ACCOUNT_IS_INACTIVE("Account has been deactivated please contact admin", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_HAS_ONE_AVATAR("Account just need one image for avatar", HttpStatus.BAD_REQUEST),
+    ACCOUNT_CAN_NOT_CHANGE_EMAIL("Email must be not edited", HttpStatus.BAD_REQUEST),
 
     /** ERROR RESPONSE FOR FILE **/
     FILE_OVER_SIZE("Max file size is {min} MB", HttpStatus.BAD_REQUEST),
@@ -30,6 +36,8 @@ public enum ErrorResponse {
     UNAUTHORIZED("You do not have permission to access this resource", HttpStatus.FORBIDDEN),
     NOT_FOUND("Data not found", HttpStatus.NOT_FOUND),
     INTERNAL_SERVER("Unspecified error at server", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    TIME_INVALID("Time is not correct", HttpStatus.BAD_REQUEST),
 
     PAYMENT_INVALID("Payment method or data is not correct", HttpStatus.BAD_REQUEST),
     UNKNOWN_ERROR_IN_PAYMENT("Payment has an unknown problem", HttpStatus.INTERNAL_SERVER_ERROR);

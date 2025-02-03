@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.config;
+package com.ducnt.chillshaker.config.thirdParty;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

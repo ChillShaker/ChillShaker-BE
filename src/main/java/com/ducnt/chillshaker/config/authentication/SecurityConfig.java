@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.config;
+package com.ducnt.chillshaker.config.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +16,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -27,8 +30,10 @@ public class SecurityConfig {
             "/api/v1/drink-categories", "/api/v1/drink-category/*",
             "/api/v1/bar/*",
             "/api/v1/table-types", "/api/v1/table-type/*",
-            "/api/v1/bar-tables", "/api/v1/bar-table/*",
-            "/api/v1/vnpay-return"
+            "/api/v1/bar-tables/*", "/api/v1/bar-table/*",
+            "/api/v1/vnpay-return",
+            "/ws/**", "/topic/**", "/app/**", "/ws/info/**",
+            "/api/v1/menus", "/api/v1/menu/*",
     };
 
     @Autowired
@@ -50,6 +55,15 @@ public class SecurityConfig {
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
+        httpSecurity.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            configuration.setAllowedHeaders(List.of("*"));
+            configuration.setAllowCredentials(true);
+            return configuration;
+        }));
+
         return httpSecurity.build();
     }
 
@@ -62,6 +76,8 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/ws/**", corsConfiguration);
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/ws/info/**", corsConfiguration);
 
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }

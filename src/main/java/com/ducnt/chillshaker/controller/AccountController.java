@@ -2,6 +2,7 @@ package com.ducnt.chillshaker.controller;
 
 import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
 import com.ducnt.chillshaker.dto.request.account.AccountUpdateRequest;
+import com.ducnt.chillshaker.dto.request.account.ProfileUpdateRequest;
 import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.service.implement.AccountService;
@@ -43,7 +44,7 @@ public class AccountController {
                 .build();
     }
 
-    @GetMapping("/account/myInfo")
+    @GetMapping("/account-information")
     public ApiResponse getMyInfo() {
         AccountResponse accountResponses = accountService.getMyInfo();
         return ApiResponse.builder()
@@ -52,8 +53,17 @@ public class AccountController {
                 .build();
     }
 
+    @PutMapping("/account-information")
+    public ApiResponse updateMyInfo(@Valid @ModelAttribute ProfileUpdateRequest request) {
+        AccountResponse accountResponses = accountService.updateMyInfo(request);
+        return ApiResponse.builder()
+                .message("Data loaded successfully")
+                .data(accountResponses)
+                .build();
+    }
+
     @PostMapping("/account")
-    public ApiResponse createAccount(@RequestBody @Valid AccountCreationRequest request) throws Exception {
+    public ApiResponse createAccount(@Valid @ModelAttribute AccountCreationRequest request) throws Exception {
         AccountResponse accountResponse = accountService.createAccount(request);
         return ApiResponse.builder()
                 .code(HttpStatus.CREATED.value())
@@ -63,7 +73,7 @@ public class AccountController {
     }
 
     @PutMapping("/account/{id}")
-    public ApiResponse updateAccount(@PathVariable("id") UUID id, @RequestBody @Valid AccountUpdateRequest request) throws Exception {
+    public ApiResponse updateAccount(@PathVariable("id") UUID id, @Valid @ModelAttribute AccountUpdateRequest request) throws Exception {
         AccountResponse accountResponse = accountService.updateAccount(id, request);
         return ApiResponse.builder()
                 .message("Updated account successfully")

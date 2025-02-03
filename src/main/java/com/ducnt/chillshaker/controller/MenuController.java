@@ -59,7 +59,7 @@ public class MenuController {
             @RequestParam(required = false, defaultValue = "") String includeProperties,
             @RequestParam(required = false, defaultValue = "name") String attribute,
             @RequestParam(required = false, defaultValue = "0") Integer pageIndex,
-            @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false, defaultValue = "3") Integer pageSize,
             @RequestParam(required = false, defaultValue = "") String sort
     ) {
         var dataResponse = menuService.getAllMenu(q, includeProperties, attribute, pageIndex, pageSize, sort);

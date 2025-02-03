@@ -24,6 +24,4 @@ public class BarResponse {
     boolean status;
 
     List<BarTimeResponse> barTimes;
-    List<BarTableResponse> barTables;
 }
-;

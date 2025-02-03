@@ -17,4 +17,5 @@ public class MenuResponse {
     String name;
     String description;
     String images;
+    double price;
 }

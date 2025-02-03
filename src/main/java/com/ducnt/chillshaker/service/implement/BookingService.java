@@ -1,30 +1,33 @@
 package com.ducnt.chillshaker.service.implement;
 
-import com.ducnt.chillshaker.config.CustomJwtDecoder;
+import com.ducnt.chillshaker.config.authentication.CustomJwtDecoder;
 import com.ducnt.chillshaker.dto.request.booking.*;
-import com.ducnt.chillshaker.dto.response.barTable.BarTableResponse;
 import com.ducnt.chillshaker.dto.response.booking.BookingResponse;
-import com.ducnt.chillshaker.dto.response.booking.BookingTableResponse;
 import com.ducnt.chillshaker.dto.response.booking.ResponseWithPaymentLink;
+import com.ducnt.chillshaker.enums.BarTableStatusEnum;
 import com.ducnt.chillshaker.enums.BookingStatusEnum;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.*;
 import com.ducnt.chillshaker.repository.*;
+import com.ducnt.chillshaker.service.thirdparty.RedisService;
 import com.ducnt.chillshaker.service.thirdparty.VNPayService;
+import com.ducnt.chillshaker.util.TimeValidatorUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.RedisSystemException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -35,11 +38,13 @@ import java.util.*;
 public class BookingService {
     BookingRepository bookingRepository;
     BarTableRepository barTableRepository;
+    BarRepository barRepository;
     DrinkRepository drinkRepository;
     AccountRepository accountRepository;
     ModelMapper modelMapper;
     VNPayService vnPayService;
     CustomJwtDecoder jwtDecoder;
+    RedisService redisService;
     private final MenuRepository menuRepository;
 
     @Transactional
@@ -61,6 +66,10 @@ public class BookingService {
                     .build();
         } catch (NotFoundException ex) {
             throw new NotFoundException(ex.getMessage());
+        } catch (CustomException ex) {
+            throw new CustomException(ex.getErrorResponse());
+        } catch (RedisSystemException ex) {
+            throw new CustomException(ErrorResponse.REDIS_STORE_FAIL);
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);
@@ -74,7 +83,7 @@ public class BookingService {
             Booking booking = createGenericBookingObject(servletRequest, request);
             booking.setBookingType(request.getBookingType());
 
-            double totalPrice = booking.getTotalPrice();
+            double totalPrice = 0;
             for (BookingDrinkRequest drinkRequest : request.getDrinks()) {
                 Drink drink = drinkRepository.findById(drinkRequest.getDrinkId())
                         .orElseThrow(() -> new NotFoundException("Drink is not existed"));
@@ -97,6 +106,8 @@ public class BookingService {
                     .build();
         } catch (NotFoundException ex) {
             throw new NotFoundException(ex.getMessage());
+        } catch (CustomException ex) {
+            throw new CustomException(ex.getErrorResponse());
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);
@@ -115,9 +126,7 @@ public class BookingService {
             BookingMenu bookingMenu = new BookingMenu(booking, menu);
             booking.getBookingMenus().add(bookingMenu);
 
-            double totalPrice = booking.getTotalPrice() + menu.getPrice();
-
-            booking.setTotalPrice(totalPrice);
+            booking.setTotalPrice(menu.getPrice());
 
             bookingRepository.save(booking);
 
@@ -131,6 +140,8 @@ public class BookingService {
                     .build();
         } catch (NotFoundException ex) {
             throw new NotFoundException(ex.getMessage());
+        } catch (CustomException ex) {
+            throw new CustomException(ex.getErrorResponse());
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);
@@ -145,24 +156,43 @@ public class BookingService {
 
         Account account = accountRepository.findByEmail(decode.getSubject())
                 .orElseThrow(() -> new NotFoundException("Email not found"));
-        Booking booking = modelMapper.map(request, Booking.class);
 
-        for (UUID tableId : request.getTableIds()) {
-            BarTable barTable = barTableRepository.findById(tableId)
-                    .orElseThrow(() -> new NotFoundException("Table is not existed"));
-            BookingTable bookingTable = new BookingTable(booking, barTable);
-            totalPrice += barTable.getTableType().getDepositAmount();
-            booking.getBookingTables().add(bookingTable);
+        Bar bar = barRepository.findByName(request.getBarName())
+                .orElseThrow(() -> new NotFoundException("Bar is not existed"));
+
+        boolean isValid = TimeValidatorUtil.validateBookingDateTime(request.getBookingDate(),
+                request.getBookingTime(), bar.getBarTimes()).orElseThrow(() -> new CustomException(ErrorResponse.TIME_INVALID));
+
+        if(isValid) {
+            Booking booking = modelMapper.map(request, Booking.class);
+            LocalDateTime localDateTime = LocalDateTime.of(request.getBookingDate(), request.getBookingTime());
+
+            for (UUID tableId : request.getTableIds()) {
+                BarTable barTable = barTableRepository.findById(tableId)
+                        .orElseThrow(() -> new NotFoundException("Table is not existed"));
+
+                String key = barTable.getName() + "-" + request.getBookingDate() + "-" + request.getBookingTime();
+                long currentEpochSeconds = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+                long bookingEpochSeconds = localDateTime.atZone(ZoneId.systemDefault()).toEpochSecond();
+
+                String value = barTable.getId() + "#" + BarTableStatusEnum.RESERVED + "#" + account.getEmail();
+                redisService.saveBarTableStatus(key, value,
+                        bookingEpochSeconds - currentEpochSeconds);
+
+                BookingTable bookingTable = new BookingTable(booking, barTable);
+                totalPrice += barTable.getTableType().getDepositAmount();
+                booking.getBookingTables().add(bookingTable);
+            }
+
+            booking.setExpireAt(localDateTime.plusHours(2));
+            booking.setAccount(account);
+            booking.setBookingCode(generateBookingCode(request.getBookingDate()));
+            booking.setStatus(BookingStatusEnum.PENDING);
+            booking.setTotalPrice(totalPrice);
+            return booking;
+        } else {
+            throw new CustomException(ErrorResponse.TIME_INVALID);
         }
-
-        LocalDateTime expireTime = LocalDateTime.of(request.getBookingDate(), request.getBookingTime())
-                .plusHours(2);
-        booking.setExpireAt(expireTime);
-        booking.setAccount(account);
-        booking.setBookingCode(generateBookingCode(request.getBookingDate()));
-        booking.setStatus(BookingStatusEnum.PENDING.ordinal());
-        booking.setTotalPrice(totalPrice);
-        return booking;
     }
 
     private String generateBookingCode(LocalDate bookingDate) {
@@ -172,4 +202,16 @@ public class BookingService {
         return datePart + randomPart;
     }
 
+    public BookingResponse getBookingInfoById(UUID id) {
+        try {
+            var booking = bookingRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Booking is not existed"));
+            return modelMapper.map(booking, BookingResponse.class);
+        } catch (NotFoundException ex) {
+            throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            throw new CustomException(ErrorResponse.INTERNAL_SERVER);
+        }
+    }
 }

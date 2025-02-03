@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.config;
+package com.ducnt.chillshaker.config.authentication;
 
 import com.ducnt.chillshaker.service.implement.AuthenticationService;
 import com.nimbusds.jose.JOSEException;

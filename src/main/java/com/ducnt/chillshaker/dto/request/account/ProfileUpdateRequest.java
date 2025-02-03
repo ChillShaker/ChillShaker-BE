@@ -8,28 +8,23 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class AccountUpdateRequest {
+public class ProfileUpdateRequest {
     @Size(min = 4, message = "FULLNAME_INVALID")
     String fullName;
     @Email(message = "EMAIL_INVALID")
     String email;
-    @Size(min = 6, message = "PASSWORD_INVALID")
-    String password;
+
     @Pattern(regexp = "^(0|\\+84)([3|5|7|8|9])+([0-9]{8})\\b$", message = "PHONE_INVALID")
     String phone;
     @NotBlank(message = "Address must not be blank")
     String address;
-
-    Set<String> roles;
 
     List<String> oldFileUrls;
     List<MultipartFile> newFiles;

@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.model;
 
+import com.ducnt.chillshaker.enums.BarTableStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,8 +17,7 @@ import java.util.Collection;
 @Builder
 public class BarTable extends BaseModel{
     String name;
-    int status;
-    boolean isActive;
+    BarTableStatusEnum status;
     boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -7,8 +7,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,4 +30,6 @@ public class AccountCreationRequest {
     String address;
     @DobConstraint(min = 18, message = "DOB_INVALID")
     LocalDate dob;
+
+    List<MultipartFile> files;
 }

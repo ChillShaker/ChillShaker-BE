@@ -131,12 +131,16 @@ public class DrinkService {
 
         long totalOfElement = drinkRepository.count();
 
-        Page<Drink> drinkPage = drinkRepository.findAllByStatusFalse(pageRequest);
+        Page<Drink> drinkList = drinkRepository.findAll(filters, pageRequest);
 
-        List<DrinkResponse> drinkResponses = drinkPage.getContent().stream()
-                .map((element) -> modelMapper.map(element, DrinkResponse.class))
+        List<DrinkResponse> drinkResponses = drinkList.getContent().stream()
+                .map((element) -> {
+                    if(element.isStatus())
+                        return modelMapper.map(element, DrinkResponse.class);
+                    return null;
+                })
                 .toList();
-        return new PageImpl<>(drinkResponses, drinkPage.getPageable(), totalOfElement);
+        return new PageImpl<>(drinkResponses, drinkList.getPageable(), totalOfElement);
     }
 
     public DrinkResponse getDrinkById(UUID id) {
