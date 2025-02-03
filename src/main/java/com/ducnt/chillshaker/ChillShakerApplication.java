@@ -1,5 +1,8 @@
 package com.ducnt.chillshaker;
 
+import com.ducnt.chillshaker.dto.request.booking.BookingTableOnlyRequest;
+import com.ducnt.chillshaker.dto.request.booking.BookingTableWithMenuRequest;
+import com.ducnt.chillshaker.dto.request.booking.GenericBookingRequest;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +27,10 @@ public class ChillShakerApplication {
         System.setProperty("VNPAY_VERSION", dotenv.get("VNPAY_VERSION"));
         System.setProperty("VNPAY_PAYMENT_URL", dotenv.get("VNPAY_PAYMENT_URL"));
         System.setProperty("VNPAY_RETURN_URL", dotenv.get("VNPAY_RETURN_URL"));
+
+
+        System.setProperty("PAYMENT_SUCCESS_RETURN_URL", dotenv.get("PAYMENT_SUCCESS_RETURN_URL"));
+        System.setProperty("PAYMENT_ERROR_RETURN_URL", dotenv.get("PAYMENT_ERROR_RETURN_URL"));
 
         System.setProperty("SPRING_MAIL_HOST", dotenv.get("SPRING_MAIL_HOST"));
         System.setProperty("SPRING_MAIL_PROTOCOL", dotenv.get("SPRING_MAIL_PROTOCOL"));

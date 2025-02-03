@@ -18,7 +18,7 @@ public class Menu extends BaseModel{
      String name;
      String description;
      String images;
-     Double price;
+     double price;
      boolean status;
 
     @ManyToOne(fetch = FetchType.LAZY)

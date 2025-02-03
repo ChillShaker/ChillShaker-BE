@@ -21,7 +21,7 @@ public class TableTypeCreationRequest {
     @Size(min = 6, message = "BarTable Type's description must be at least 6 character")
     String description;
     @Min(value = 1, message = "BarTable Type's limit of people must be at least 1")
-    int limitOfPeople;
+    int capacity;
     double depositAmount;
     List<MultipartFile> files;
 }

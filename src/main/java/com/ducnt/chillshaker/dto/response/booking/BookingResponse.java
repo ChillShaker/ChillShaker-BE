@@ -1,6 +1,9 @@
 package com.ducnt.chillshaker.dto.response.booking;
 
+import com.ducnt.chillshaker.dto.response.payment.PaymentResponse;
+import com.ducnt.chillshaker.enums.BookingStatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +21,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+@MappedSuperclass
 public class BookingResponse {
+    UUID id;
     String bookingCode;
     LocalDate bookingDate;
     LocalTime bookingTime;
@@ -26,10 +31,11 @@ public class BookingResponse {
     double totalPrice;
     UUID checkInStaffId;
     UUID checkOutStaffId;
-    int numberOfPeople;
     LocalDateTime expireAt;
+    BookingStatusEnum status;
 
     List<BookingTableResponse> bookingTables;
     List<BookingDrinkResponse> bookingDrinks;
     List<BookingMenuResponse> bookingMenus;
+    PaymentResponse payment;
 }

@@ -16,7 +16,7 @@ public class TableTypeResponse {
     UUID id;
     String name;
     String description;
-    int limitOfPeople;
+    int capacity;
     double depositAmount;
     String image;
 }

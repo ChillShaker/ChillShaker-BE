@@ -12,6 +12,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("${api.base-url}")
 @RequiredArgsConstructor
@@ -54,6 +56,17 @@ public class BookingController {
                 .code(HttpStatus.OK.value())
                 .data(dataResponse)
                 .message("Booking table with menu success")
+                .build();
+    }
+
+    @GetMapping("/booking-info/{id}")
+    public ApiResponse getBookingInfoById(@PathVariable("id")UUID id) {
+        var dataResponse = bookingService.getBookingInfoById(id);
+        return ApiResponse
+                .builder()
+                .code(HttpStatus.OK.value())
+                .data(dataResponse)
+                .message("Data loaded")
                 .build();
     }
 }

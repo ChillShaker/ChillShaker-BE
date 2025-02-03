@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.config;
+package com.ducnt.chillshaker.config.thirdParty;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
