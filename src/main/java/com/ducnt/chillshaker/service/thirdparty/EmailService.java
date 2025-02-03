@@ -16,13 +16,14 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class EmailService {
+public class EmailService implements com.ducnt.chillshaker.service.interfaces.IEmailService {
     JavaMailSender mailSender;
     Random random = new Random();
     RedisService redisService;
 
     static String htmlContext = "";
 
+    @Override
     public void sendOtp(String toEmail) throws MessagingException {
         String otp = String.format("%06d", random.nextInt(999999));
         String savedOtp = redisService.getOTP(toEmail);

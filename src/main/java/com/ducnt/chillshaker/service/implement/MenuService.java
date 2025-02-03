@@ -28,12 +28,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class MenuService {
+public class MenuService implements com.ducnt.chillshaker.service.interfaces.IMenuService {
     MenuRepository menuRepository;
     ModelMapper modelMapper;
     CloudinaryService cloudinaryService;
     GenericSpecification<Menu> genericSpecification;
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public MenuResponse createMenu(MenuCreationRequest request) {
@@ -49,6 +50,7 @@ public class MenuService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public MenuResponse updateMenu(UUID id, MenuUpdateRequest request) {
@@ -66,6 +68,7 @@ public class MenuService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public boolean deleteMenu(UUID id) {
@@ -82,6 +85,7 @@ public class MenuService {
         }
     }
 
+    @Override
     public Page<MenuResponse> getAllMenu(
             String q,
             String includeProperties,
@@ -112,6 +116,7 @@ public class MenuService {
         }
     }
 
+    @Override
     public MenuResponse getMenuById(UUID id) {
         try {
             Menu menu = menuRepository.findById(id)

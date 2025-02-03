@@ -23,11 +23,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class BarService {
+public class BarService implements com.ducnt.chillshaker.service.interfaces.IBarService {
     BarRepository barRepository;
     ModelMapper modelMapper;
     CloudinaryService cloudinaryService;
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public BarResponse updateBar(UUID id, BarUpdateRequest request) {
@@ -51,6 +52,7 @@ public class BarService {
         }
     }
 
+    @Override
     @Transactional
     public BarResponse getBarById(UUID id) {
         var bar = barRepository.findById(id)

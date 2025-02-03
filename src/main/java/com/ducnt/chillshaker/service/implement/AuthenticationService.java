@@ -1,8 +1,6 @@
 package com.ducnt.chillshaker.service.implement;
 
-import com.ducnt.chillshaker.dto.request.account.AccountCreationRequest;
 import com.ducnt.chillshaker.dto.request.authentication.*;
-import com.ducnt.chillshaker.dto.response.account.AccountResponse;
 import com.ducnt.chillshaker.dto.response.authentication.AuthenticationResponse;
 import com.ducnt.chillshaker.enums.AccountStatusEnum;
 import com.ducnt.chillshaker.enums.RoleEnum;
@@ -14,7 +12,6 @@ import com.ducnt.chillshaker.model.Account;
 import com.ducnt.chillshaker.model.InvalidationToken;
 import com.ducnt.chillshaker.model.Role;
 import com.ducnt.chillshaker.repository.AccountRepository;
-import com.ducnt.chillshaker.repository.GenericSpecification;
 import com.ducnt.chillshaker.repository.InvalidationTokenRepository;
 import com.ducnt.chillshaker.repository.RoleRepository;
 import com.ducnt.chillshaker.service.thirdparty.EmailService;
@@ -43,7 +40,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AuthenticationService {
+public class AuthenticationService implements com.ducnt.chillshaker.service.interfaces.IAuthenticationService {
     AccountRepository accountRepository;
     InvalidationTokenRepository invalidationTokenRepository;
     ModelMapper modelMapper;
@@ -71,6 +68,7 @@ public class AuthenticationService {
     @Value("${jwt.refreshable-duration-type}")
     protected String REFRESHABLE_DURATION_TYPE;
 
+    @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var account = accountRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
@@ -153,7 +151,8 @@ public class AuthenticationService {
         return stringJoiner.toString();
     }
 
-    public boolean introspect (String token) throws JOSEException, ParseException {
+    @Override
+    public boolean introspect(String token) throws JOSEException, ParseException {
         try {
             verifyToken(token);
             return true;
@@ -163,6 +162,7 @@ public class AuthenticationService {
 
     }
 
+    @Override
     public void logout(LogoutRequest logoutRequest) throws JOSEException, ParseException {
         var signToken = verifyToken(logoutRequest.getRefreshToken());
 
@@ -178,6 +178,7 @@ public class AuthenticationService {
         invalidationTokenRepository.save(invalidationToken);
     }
 
+    @Override
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
 
         var signToken = verifyToken(request.getRefreshToken());
@@ -192,23 +193,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
-        JWSVerifier verifier = new MACVerifier(JWT_SIGNATURE_KEY.getBytes());
-
-        SignedJWT signedJWT = SignedJWT.parse(token);
-
-        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        String jti = signedJWT.getJWTClaimsSet().getJWTID();
-
-        if(!(signedJWT.verify(verifier) && expirationTime.after(new Date())))
-            throw new CustomException(ErrorResponse.UNAUTHENTICATED);
-
-        if(jti != null && invalidationTokenRepository.existsById(UUID.fromString(jti)))
-            throw new CustomException(ErrorResponse.UNAUTHENTICATED);
-
-        return signedJWT;
-    }
-
+    @Override
     @Transactional
     public boolean register(SignUpRequest request) {
         try {
@@ -236,6 +221,7 @@ public class AuthenticationService {
         }
     }
 
+    @Override
     @Transactional
     public boolean verifyAccountWithOtp(VerifyOtpRequest request) {
         try {
@@ -255,5 +241,22 @@ public class AuthenticationService {
         } catch (Exception ex) {
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);
         }
+    }
+
+    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
+        JWSVerifier verifier = new MACVerifier(JWT_SIGNATURE_KEY.getBytes());
+
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        String jti = signedJWT.getJWTClaimsSet().getJWTID();
+
+        if(!(signedJWT.verify(verifier) && expirationTime.after(new Date())))
+            throw new CustomException(ErrorResponse.UNAUTHENTICATED);
+
+        if(jti != null && invalidationTokenRepository.existsById(UUID.fromString(jti)))
+            throw new CustomException(ErrorResponse.UNAUTHENTICATED);
+
+        return signedJWT;
     }
 }

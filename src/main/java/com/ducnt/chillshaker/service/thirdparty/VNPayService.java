@@ -30,12 +30,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class VNPayService {
+public class VNPayService implements com.ducnt.chillshaker.service.interfaces.IVNPayService {
     PaymentRepository paymentRepository;
     EntityManager entityManager;
     Environment environment;
     RedisService redisService;
 
+    @Override
     @Transactional
     public String getVnpayPaymentLink(UUID bookingId, UUID accountId, double totalPrice,
                                       HttpServletRequest servletRequest) {
@@ -78,6 +79,7 @@ public class VNPayService {
         }
     }
 
+    @Override
     @Transactional
     public boolean processPaymentReturn(VNPayResponse vnPayResponse) {
         try {

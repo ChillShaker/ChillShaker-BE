@@ -35,7 +35,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class BookingService {
+public class BookingService implements com.ducnt.chillshaker.service.interfaces.IBookingService {
     BookingRepository bookingRepository;
     BarTableRepository barTableRepository;
     BarRepository barRepository;
@@ -47,9 +47,10 @@ public class BookingService {
     RedisService redisService;
     private final MenuRepository menuRepository;
 
+    @Override
     @Transactional
     public ResponseWithPaymentLink createBookingTableOnly(HttpServletRequest servletRequest,
-                                                  BookingTableOnlyRequest request) {
+                                                          BookingTableOnlyRequest request) {
         try {
             Booking booking = createGenericBookingObject(servletRequest, request);
             booking.setBookingType(request.getBookingType());
@@ -76,9 +77,10 @@ public class BookingService {
         }
     }
 
+    @Override
     @Transactional
     public ResponseWithPaymentLink createBookingTableWithDrink(HttpServletRequest servletRequest,
-                                                                BookingTableWithDrinkRequest request) {
+                                                               BookingTableWithDrinkRequest request) {
         try {
             Booking booking = createGenericBookingObject(servletRequest, request);
             booking.setBookingType(request.getBookingType());
@@ -114,9 +116,10 @@ public class BookingService {
         }
     }
 
+    @Override
     @Transactional
     public ResponseWithPaymentLink createBookingTableWithMenu(HttpServletRequest servletRequest,
-                                                               BookingTableWithMenuRequest request) {
+                                                              BookingTableWithMenuRequest request) {
         try {
             Booking booking = createGenericBookingObject(servletRequest, request);
             booking.setBookingType(request.getBookingType());
@@ -202,6 +205,7 @@ public class BookingService {
         return datePart + randomPart;
     }
 
+    @Override
     public BookingResponse getBookingInfoById(UUID id) {
         try {
             var booking = bookingRepository.findById(id)
