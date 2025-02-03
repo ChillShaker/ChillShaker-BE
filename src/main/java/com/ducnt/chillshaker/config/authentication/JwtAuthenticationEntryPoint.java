@@ -1,4 +1,4 @@
-package com.ducnt.chillshaker.config;
+package com.ducnt.chillshaker.config.authentication;
 
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
 import com.ducnt.chillshaker.exception.ErrorResponse;
@@ -25,7 +25,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 .writeValueAsString(ApiResponse
                         .builder()
                         .code(unauthenticated.getHttpStatusCode().value())
-                        .message(unauthenticated.getMessage() + "With wrong JWT")
+                        .message(unauthenticated.getMessage() + " with wrong JWT")
                         .build()));
 
         response.flushBuffer();

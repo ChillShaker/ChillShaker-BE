@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.dto.response.bar;
 
+import com.ducnt.chillshaker.dto.response.barTable.BarTableResponse;
 import com.ducnt.chillshaker.dto.response.barTime.BarTimeResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,3 @@ public class BarResponse {
 
     List<BarTimeResponse> barTimes;
 }
-;

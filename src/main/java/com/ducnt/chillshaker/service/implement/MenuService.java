@@ -97,11 +97,11 @@ public class MenuService {
                     sort.equals("desc") ? Sort.by(Sort.Direction.DESC, attribute) : Sort.by(Sort.Direction.ASC, attribute)
             );
 
-            var filters = genericSpecification.getFilters(q, includeProperties, attribute);
+            //var filters = genericSpecification.getFilters(q, includeProperties, attribute);
 
             long totalOfElement = menuRepository.count();
 
-            Page<Menu> menuPage = menuRepository.findAllByStatusFalse(pageRequest);
+            Page<Menu> menuPage = menuRepository.findAllByStatusTrue(pageRequest);
 
             List<MenuResponse> menuResponses = menuPage.getContent().stream()
                     .map(element -> modelMapper.map(element, MenuResponse.class)).toList();

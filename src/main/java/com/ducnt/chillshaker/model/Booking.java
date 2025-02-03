@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.model;
 
+import com.ducnt.chillshaker.enums.BookingStatusEnum;
 import com.ducnt.chillshaker.enums.BookingTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,9 +28,8 @@ public class Booking extends BaseModel {
     double totalPrice;
     UUID checkInStaffId;
     UUID checkOutStaffId;
-    int numberOfPeople;
     LocalDateTime expireAt;
-    int status;
+    BookingStatusEnum status;
     BookingTypeEnum bookingType;
 
     @ManyToOne(fetch = FetchType.LAZY)

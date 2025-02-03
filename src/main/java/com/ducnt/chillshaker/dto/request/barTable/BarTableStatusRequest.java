@@ -1,26 +1,24 @@
-package com.ducnt.chillshaker.dto.response.barTable;
+package com.ducnt.chillshaker.dto.request.barTable;
 
-import com.ducnt.chillshaker.dto.response.bar.BarResponse;
-import com.ducnt.chillshaker.dto.response.tableType.TableTypeResponse;
 import com.ducnt.chillshaker.enums.BarTableStatusEnum;
-import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@MappedSuperclass
-public class BarTableResponse {
-    UUID id;
-    String name;
+public class BarTableStatusRequest {
+    LocalDate bookingDate;
+    LocalTime bookingTime;
+    UUID barTableId;
     BarTableStatusEnum status;
-
-    TableTypeResponse tableType;
+    String userEmail;
 }

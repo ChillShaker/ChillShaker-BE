@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.model;
 
+import com.ducnt.chillshaker.enums.PaymentStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,7 @@ public class Payment extends BaseModel {
     double paymentFee;
     double totalPrice;
     String Note;
-    int status;
+    PaymentStatusEnum status;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

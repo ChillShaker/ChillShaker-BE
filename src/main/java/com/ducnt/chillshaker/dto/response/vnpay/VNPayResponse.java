@@ -61,34 +61,34 @@ public class VNPayResponse {
         if (vnp_Amount != null) {
             responseData.put("vnp_Amount", String.valueOf(vnp_Amount));
         }
-        if (!vnp_TmnCode.isEmpty()) {
+        if (vnp_TmnCode != null) {
             responseData.put("vnp_TmnCode", vnp_TmnCode);
         }
-        if (!vnp_BankCode.isEmpty()) {
+        if (vnp_BankCode != null) {
             responseData.put("vnp_BankCode", vnp_BankCode);
         }
-        if (!vnp_BankTranNo.isEmpty()) {
+        if (vnp_BankTranNo != null) {
             responseData.put("vnp_BankTranNo", vnp_BankTranNo);
         }
-        if (!vnp_CardType.isEmpty()) {
+        if (vnp_CardType != null) {
             responseData.put("vnp_CardType", vnp_CardType);
         }
-        if (!vnp_OrderInfo.isEmpty()) {
+        if (vnp_OrderInfo != null) {
             responseData.put("vnp_OrderInfo", vnp_OrderInfo);
         }
-        if (!vnp_TransactionNo.isEmpty()) {
+        if (vnp_TransactionNo != null) {
             responseData.put("vnp_TransactionNo", vnp_TransactionNo);
         }
-        if (!vnp_TransactionStatus.isEmpty()) {
+        if (vnp_TransactionStatus != null) {
             responseData.put("vnp_TransactionStatus", vnp_TransactionStatus);
         }
-        if (!vnp_TxnRef.isEmpty()) {
+        if (vnp_TxnRef != null) {
             responseData.put("vnp_TxnRef", vnp_TxnRef);
         }
-        if (!vnp_PayDate.isEmpty()) {
+        if (vnp_PayDate != null) {
             responseData.put("vnp_PayDate", vnp_PayDate);
         }
-        if (vnp_ResponseCode != null && !vnp_ResponseCode.isEmpty()) {
+        if (vnp_ResponseCode != null) {
             responseData.put("vnp_ResponseCode", vnp_ResponseCode);
         }
     }

@@ -7,9 +7,7 @@ import com.ducnt.chillshaker.enums.PaymentStatusEnum;
 import com.ducnt.chillshaker.exception.CustomException;
 import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
-import com.ducnt.chillshaker.model.Account;
-import com.ducnt.chillshaker.model.Booking;
-import com.ducnt.chillshaker.model.Payment;
+import com.ducnt.chillshaker.model.*;
 import com.ducnt.chillshaker.repository.PaymentRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -34,6 +34,7 @@ public class VNPayService {
     PaymentRepository paymentRepository;
     EntityManager entityManager;
     Environment environment;
+    RedisService redisService;
 
     @Transactional
     public String getVnpayPaymentLink(UUID bookingId, UUID accountId, double totalPrice,
@@ -49,9 +50,11 @@ public class VNPayService {
                     .account(account)
                     .totalPrice(totalPrice)
                     .paymentDate(currentTime.toLocalDate())
-                    .status(PaymentStatusEnum.PENDING.ordinal())
-                    //.transactionCode(UUID.randomUUID().toString())
+                    .status(PaymentStatusEnum.PENDING)
                     .build();
+
+            booking.setPayment(payment);
+            account.getPayment().add(payment);
             paymentRepository.save(payment);
 
             VNPayRequest vnPayRequest = new VNPayRequest(
@@ -83,16 +86,18 @@ public class VNPayService {
             if(valid && !vnPayResponse.getVnp_TxnRef().isEmpty()) {
                 Payment payment = paymentRepository.findById(UUID.fromString(vnPayResponse.getVnp_TxnRef()))
                         .orElseThrow(() -> new NotFoundException("Payment is not existed"));
-
                 if(!Objects.equals(vnPayResponse.getVnp_ResponseCode(), "00") ||
                         !Objects.equals(vnPayResponse.getVnp_TransactionStatus(), "00")) {
-                    payment.setStatus(PaymentStatusEnum.FAIL.ordinal());
-                    payment.getBooking().setStatus(BookingStatusEnum.CANCELED.ordinal());
+
+                    removeBarTablesInRedis(payment.getBooking().getBookingTables());
+
+                    payment.setStatus(PaymentStatusEnum.FAIL);
+                    payment.getBooking().setStatus(BookingStatusEnum.CANCELED);
                     paymentRepository.save(payment);
                     return false;
                 }
 
-                payment.setStatus(PaymentStatusEnum.SUCCESS.ordinal());
+                payment.setStatus(PaymentStatusEnum.SUCCESS);
                 payment.setTransactionCode(vnPayResponse.getVnp_TransactionNo());
                 payment.setProviderName(vnPayResponse.getVnp_BankCode());
                 paymentRepository.save(payment);
@@ -107,5 +112,12 @@ public class VNPayService {
         } catch (Exception ex) {
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);
         }
+    }
+
+    private void removeBarTablesInRedis(Collection<BookingTable> bookingTables) {
+        bookingTables.forEach(e -> {
+           String key = e.getBarTable().getName() + "-" + e.getBooking().getBookingDate() + "-" + e.getBooking().getBookingTime();
+           redisService.deleteBarTableStatus(key);
+        });
     }
 }

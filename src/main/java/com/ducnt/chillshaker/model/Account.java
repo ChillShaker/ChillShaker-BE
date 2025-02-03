@@ -1,5 +1,6 @@
 package com.ducnt.chillshaker.model;
 
+import com.ducnt.chillshaker.enums.AccountStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,13 +18,15 @@ import java.util.List;
 @EqualsAndHashCode(callSuper=true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Account extends BaseModel{
+public class Account extends BaseModel {
     String fullName;
     String email;
     String password;
     String phone;
     String address;
     LocalDate dob;
+    String image;
+    AccountStatusEnum status;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
