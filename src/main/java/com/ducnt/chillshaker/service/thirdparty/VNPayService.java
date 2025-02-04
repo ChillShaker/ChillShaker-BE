@@ -9,6 +9,8 @@ import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.*;
 import com.ducnt.chillshaker.repository.PaymentRepository;
+import com.ducnt.chillshaker.service.interfaces.IEmailService;
+import com.ducnt.chillshaker.service.interfaces.IRedisService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +36,8 @@ public class VNPayService implements com.ducnt.chillshaker.service.interfaces.IV
     PaymentRepository paymentRepository;
     EntityManager entityManager;
     Environment environment;
-    RedisService redisService;
+    IRedisService redisService;
+    IEmailService emailService;
 
     @Override
     @Transactional
@@ -103,6 +106,7 @@ public class VNPayService implements com.ducnt.chillshaker.service.interfaces.IV
                 payment.setTransactionCode(vnPayResponse.getVnp_TransactionNo());
                 payment.setProviderName(vnPayResponse.getVnp_BankCode());
                 paymentRepository.save(payment);
+                emailService.sendPaymentInfo(payment);
                 return true;
             } else {
                 throw new NoSuchAlgorithmException();
