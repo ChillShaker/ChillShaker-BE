@@ -187,6 +187,7 @@ public class BookingService implements com.ducnt.chillshaker.service.interfaces.
                 booking.getBookingTables().add(bookingTable);
             }
 
+            booking.setBar(bar);
             booking.setExpireAt(localDateTime.plusHours(2));
             booking.setAccount(account);
             booking.setBookingCode(generateBookingCode(request.getBookingDate()));

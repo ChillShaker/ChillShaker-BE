@@ -56,7 +56,7 @@ public class ApplicationInitConfig {
               customerRoles.add(customerRole);
               Account customer1Account = Account
                       .builder()
-                      .email("customer1@gmail.com")
+                      .email("chillshakertest@tempumail.show")
                       .password(passwordEncoder.encode("string"))
                       .fullName("customer1")
                       .phone("0987654321")
