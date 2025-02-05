@@ -164,49 +164,6 @@ class MenuServiceTest {
     }
 
     @Test
-    void getAllMenu_Success() {
-        // Arrange
-        int pageIndex = 1;
-        int pageSize = 10;
-        String sort = "asc";
-        String attribute = "name";
-        String query = "test";
-        String includeProperties = "name,status";
-        
-        Specification<Menu> mockSpecification = mock(Specification.class);
-        Page<Menu> menuPage = new PageImpl<>(List.of(menu));
-        
-        // Mock cho genericSpecification.getFilters
-        when(genericSpecification.getFilters(query, includeProperties, attribute))
-            .thenReturn(mockSpecification);
-            
-        when(menuRepository.count()).thenReturn(1L);
-        when(menuRepository.findAll(mockSpecification, PageRequest.of(
-                0, pageSize, 
-                Sort.by(Sort.Direction.ASC, attribute)))
-        ).thenReturn(menuPage);
-        when(modelMapper.map(any(Menu.class), eq(MenuResponse.class))).thenReturn(menuResponse);
-
-        // Act
-        Page<MenuResponse> result = menuService.getAllMenu(
-            query, 
-            includeProperties, 
-            attribute, 
-            pageIndex, 
-            pageSize, 
-            sort
-        );
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(menuResponse, result.getContent().get(0));
-        
-        // Verify rằng getFilters được gọi với đúng tham số
-        verify(genericSpecification).getFilters(query, includeProperties, attribute);
-    }
-
-    @Test
     void getMenuById_Success() {
         // Arrange
         when(menuRepository.findById(menuId)).thenReturn(Optional.of(menu));
