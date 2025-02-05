@@ -7,7 +7,7 @@ public interface IRedisService {
 
     void deleteOTP(String email);
 
-    void saveBarTableStatus(String key, String barTableId, long duration);
+    void saveBarTableStatus(String key, String value, long duration);
 
     String getBarTableStatus(String key);
 

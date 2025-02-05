@@ -31,8 +31,8 @@ public class RedisService implements IRedisService {
     }
 
     @Override
-    public void saveBarTableStatus(String key, String barTableId, long duration) {
-        redisTemplate.opsForValue().set(key, barTableId, duration, TimeUnit.SECONDS);
+    public void saveBarTableStatus(String key, String value, long duration) {
+        redisTemplate.opsForValue().set(key, value, duration, TimeUnit.SECONDS);
     }
 
     @Override

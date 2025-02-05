@@ -4,14 +4,18 @@ import com.ducnt.chillshaker.dto.request.booking.BookingTableOnlyRequest;
 import com.ducnt.chillshaker.dto.request.booking.BookingTableWithDrinkRequest;
 import com.ducnt.chillshaker.dto.request.booking.BookingTableWithMenuRequest;
 import com.ducnt.chillshaker.dto.response.common.ApiResponse;
-import com.ducnt.chillshaker.service.implement.BookingService;
+import com.ducnt.chillshaker.enums.BookingStatusEnum;
+import com.ducnt.chillshaker.service.interfaces.IBookingService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @RestController
@@ -19,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BookingController {
-    BookingService bookingService;
+    IBookingService bookingService;
 
     @PostMapping("/booking-only-table")
     public ApiResponse createBookingTableOnly(HttpServletRequest servletRequest,
@@ -62,6 +66,31 @@ public class BookingController {
     @GetMapping("/booking-info/{id}")
     public ApiResponse getBookingInfoById(@PathVariable("id")UUID id) {
         var dataResponse = bookingService.getBookingInfoById(id);
+        return ApiResponse
+                .builder()
+                .code(HttpStatus.OK.value())
+                .data(dataResponse)
+                .message("Data loaded")
+                .build();
+    }
+
+    @PutMapping("/booking-status/{status}/{id}")
+    @SendTo("/topic/bar-tables")
+    public ApiResponse updateBookingStatus(@PathVariable("id")UUID id,
+                                           @PathVariable("status")BookingStatusEnum statusEnum) {
+        var dataResponse = bookingService.updateBookingStatus(id, statusEnum);
+        return ApiResponse
+                .builder()
+                .code(HttpStatus.OK.value())
+                .data(dataResponse)
+                .message("Data loaded")
+                .build();
+    }
+
+    @GetMapping("/booking/date-time")
+    public ApiResponse getAllBookingByDateTime(@RequestParam("booking-date") LocalDate bookingDate,
+                                               @RequestParam("booking-time") LocalTime bookingTime) {
+        var dataResponse = bookingService.getAllBookingByDateTime(bookingDate, bookingTime);
         return ApiResponse
                 .builder()
                 .code(HttpStatus.OK.value())
