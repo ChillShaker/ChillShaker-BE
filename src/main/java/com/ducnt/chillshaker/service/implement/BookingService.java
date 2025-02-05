@@ -11,6 +11,8 @@ import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.*;
 import com.ducnt.chillshaker.repository.*;
+import com.ducnt.chillshaker.service.interfaces.IRedisService;
+import com.ducnt.chillshaker.service.interfaces.IVNPayService;
 import com.ducnt.chillshaker.service.thirdparty.RedisService;
 import com.ducnt.chillshaker.service.thirdparty.VNPayService;
 import com.ducnt.chillshaker.util.TimeValidatorUtil;
@@ -21,35 +23,39 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.RedisSystemException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class BookingService {
+public class BookingService implements com.ducnt.chillshaker.service.interfaces.IBookingService {
     BookingRepository bookingRepository;
     BarTableRepository barTableRepository;
     BarRepository barRepository;
     DrinkRepository drinkRepository;
     AccountRepository accountRepository;
     ModelMapper modelMapper;
-    VNPayService vnPayService;
+    IVNPayService vnPayService;
     CustomJwtDecoder jwtDecoder;
-    RedisService redisService;
-    private final MenuRepository menuRepository;
+    IRedisService redisService;
+    MenuRepository menuRepository;
 
+    @Override
     @Transactional
     public ResponseWithPaymentLink createBookingTableOnly(HttpServletRequest servletRequest,
-                                                  BookingTableOnlyRequest request) {
+                                                          BookingTableOnlyRequest request) {
         try {
             Booking booking = createGenericBookingObject(servletRequest, request);
             booking.setBookingType(request.getBookingType());
@@ -76,9 +82,10 @@ public class BookingService {
         }
     }
 
+    @Override
     @Transactional
     public ResponseWithPaymentLink createBookingTableWithDrink(HttpServletRequest servletRequest,
-                                                                BookingTableWithDrinkRequest request) {
+                                                               BookingTableWithDrinkRequest request) {
         try {
             Booking booking = createGenericBookingObject(servletRequest, request);
             booking.setBookingType(request.getBookingType());
@@ -114,9 +121,10 @@ public class BookingService {
         }
     }
 
+    @Override
     @Transactional
     public ResponseWithPaymentLink createBookingTableWithMenu(HttpServletRequest servletRequest,
-                                                               BookingTableWithMenuRequest request) {
+                                                              BookingTableWithMenuRequest request) {
         try {
             Booking booking = createGenericBookingObject(servletRequest, request);
             booking.setBookingType(request.getBookingType());
@@ -184,6 +192,7 @@ public class BookingService {
                 booking.getBookingTables().add(bookingTable);
             }
 
+            booking.setBar(bar);
             booking.setExpireAt(localDateTime.plusHours(2));
             booking.setAccount(account);
             booking.setBookingCode(generateBookingCode(request.getBookingDate()));
@@ -202,6 +211,7 @@ public class BookingService {
         return datePart + randomPart;
     }
 
+    @Override
     public BookingResponse getBookingInfoById(UUID id) {
         try {
             var booking = bookingRepository.findById(id)
@@ -209,6 +219,52 @@ public class BookingService {
             return modelMapper.map(booking, BookingResponse.class);
         } catch (NotFoundException ex) {
             throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            throw new CustomException(ErrorResponse.INTERNAL_SERVER);
+        }
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('STAFF')")
+    public BookingResponse updateBookingStatus(UUID id, BookingStatusEnum statusEnum) {
+        try {
+            var booking = bookingRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Booking is not existed"));
+            long duration = TimeUnit.HOURS.toMillis(24);
+
+            for(BookingTable bookingTable : booking.getBookingTables()) {
+                BarTable barTable = bookingTable.getBarTable();
+                String key = barTable.getName() + "-" + booking.getBookingDate() + "-" + booking.getBookingTime();
+                if(redisService.getBarTableStatus(key) != null) {
+                    redisService.deleteBarTableStatus(key);
+                }
+                String value = barTable.getId() + "#" + statusEnum.name()+ "#" + booking.getAccount().getEmail();
+                redisService.saveBarTableStatus(key, value, duration);
+            }
+
+            return modelMapper.map(booking, BookingResponse.class);
+        } catch (NotFoundException ex) {
+            throw new NotFoundException(ex.getMessage());
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            throw new CustomException(ErrorResponse.INTERNAL_SERVER);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STAFF')")
+    public List<BookingResponse> getAllBookingByDateTime(LocalDate bookingDate, LocalTime bookingTime) {
+        try {
+            var bookings = bookingRepository.findAll();
+
+            List<BookingResponse> responses = bookings.stream()
+                    .filter(booking -> booking.getBookingTime().isAfter(bookingTime)
+                            || booking.getBookingDate().isAfter(bookingDate))
+                    .map(booking -> modelMapper.map(booking, BookingResponse.class))
+                    .toList();
+            return responses;
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new CustomException(ErrorResponse.INTERNAL_SERVER);

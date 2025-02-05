@@ -33,16 +33,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BarTableService {
+public class BarTableService implements com.ducnt.chillshaker.service.interfaces.IBarTableService {
     BarTableRepository barTableRepository;
     BookingTableRepository bookingTableRepository;
     TableTypeRepository tableTypeRepository;
@@ -50,6 +48,7 @@ public class BarTableService {
     GenericSpecification<BarTable> genericSpecification;
     RedisService redisService;
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public BarTableResponse createBarTable(BarTableCreationRequest request) {
@@ -73,6 +72,7 @@ public class BarTableService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public BarTableResponse updateBarTable(UUID id, BarTableUpdateRequest request) {
@@ -94,6 +94,7 @@ public class BarTableService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public boolean deleteBarTableById(UUID id) {
@@ -110,6 +111,7 @@ public class BarTableService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('CUSTOMER')")
     public Page<BarTableResponse> getAllBarTableForCustomer(
             String q,
@@ -139,6 +141,7 @@ public class BarTableService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public Page<BarTableManagementResponse> getAllBarTableForAdmin(
             String q,
@@ -169,6 +172,7 @@ public class BarTableService {
         }
     }
 
+    @Override
     public BarTableResponse getBarTableById(UUID id) {
         try {
             BarTable barTable = barTableRepository.findById(id)
@@ -182,6 +186,7 @@ public class BarTableService {
         }
     }
 
+    @Override
     public List<BarTableResponse> getBarTableByDateTime(LocalDate bookingDate, LocalTime bookingTime) {
         try {
             List<BookingTable> bookingTables = bookingTableRepository
@@ -204,6 +209,7 @@ public class BarTableService {
         }
     }
 
+    @Override
     public BarTableStatusResponse getStatusBarTable(BarTableStatusRequest request) {
         BarTable barTable = barTableRepository.findById(request.getBarTableId())
                 .orElseThrow(() -> new NotFoundException("Bar table is not existed"));
@@ -222,6 +228,7 @@ public class BarTableService {
         return new BarTableStatusResponse(barTable.getId(), BarTableStatusEnum.EMPTY, request.getUserEmail());
     }
 
+    @Override
     public BarTableStatusResponse setStatusBarTable(BarTableStatusRequest request) {
         BarTable barTable = barTableRepository.findById(request.getBarTableId())
                 .orElseThrow(() -> new NotFoundException("Bar table is not existed"));

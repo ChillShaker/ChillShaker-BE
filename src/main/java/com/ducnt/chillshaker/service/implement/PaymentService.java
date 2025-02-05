@@ -13,10 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PaymentService {
+public class PaymentService implements com.ducnt.chillshaker.service.interfaces.IPaymentService {
     PaymentRepository paymentRepository;
     ModelMapper modelMapper;
 
+    @Override
     public PaymentResponse getPaymentInfo(String transactionNo) {
         try {
             Payment payment = paymentRepository.findByTransactionCode(transactionNo)

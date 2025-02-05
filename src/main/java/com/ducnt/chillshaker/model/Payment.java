@@ -29,5 +29,6 @@ public class Payment extends BaseModel {
     Account account;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", unique = true)
     Booking booking;
 }

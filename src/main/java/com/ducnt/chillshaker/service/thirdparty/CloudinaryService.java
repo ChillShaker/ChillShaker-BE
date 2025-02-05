@@ -22,9 +22,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Slf4j
-public class CloudinaryService {
+public class CloudinaryService implements com.ducnt.chillshaker.service.interfaces.ICloudinaryService {
     Cloudinary cloudinary;
 
+    @Override
     @Transactional
     public String uploadFile(MultipartFile file) {
         try {
@@ -36,6 +37,7 @@ public class CloudinaryService {
         }
     }
 
+    @Override
     @Transactional
     public List<String> updateFiles(List<String> oldFileUrls, List<MultipartFile> newFiles) throws IOException {
         try {
@@ -57,6 +59,7 @@ public class CloudinaryService {
         return fileUrl.substring(lastSlashIndex + 1, dotIndex);
     }
 
+    @Override
     @Transactional
     public List<String> uploadFiles(List<MultipartFile> files) throws IOException {
         List<String> uploadedUrls = new ArrayList<>();
@@ -74,6 +77,7 @@ public class CloudinaryService {
         return uploadedUrls;
     }
 
+    @Override
     @Transactional
     public boolean deleteFiles(String imageUrls) throws IOException {
         List<String> imageUrlList = extractUrlFromString(imageUrls);

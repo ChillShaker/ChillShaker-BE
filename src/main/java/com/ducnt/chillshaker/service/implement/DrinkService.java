@@ -31,13 +31,14 @@ import java.util.UUID;
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class DrinkService {
+public class DrinkService implements com.ducnt.chillshaker.service.interfaces.IDrinkService {
     DrinkRepository drinkRepository;
     DrinkCategoryRepository drinkCategoryRepository;
     ModelMapper modelMapper;
     CloudinaryService cloudinaryService;
     GenericSpecification<Drink> drinkGenericSpecification;
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public DrinkResponse createDrink(DrinkCreationRequest creationRequest) throws Exception {
@@ -67,6 +68,7 @@ public class DrinkService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public DrinkResponse updateDrink(UUID id, DrinkUpdateRequest request) throws Exception {
@@ -96,6 +98,7 @@ public class DrinkService {
         }
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public boolean deleteDrink(UUID id) {
@@ -112,6 +115,7 @@ public class DrinkService {
         }
     }
 
+    @Override
     public Page<DrinkResponse> getAllDrinks(
             String q,
             String includeProperties,
@@ -143,6 +147,7 @@ public class DrinkService {
         return new PageImpl<>(drinkResponses, drinkList.getPageable(), totalOfElement);
     }
 
+    @Override
     public DrinkResponse getDrinkById(UUID id) {
         Drink drink = drinkRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Drink is not found"));

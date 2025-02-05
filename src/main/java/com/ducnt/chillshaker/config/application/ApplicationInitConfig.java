@@ -41,9 +41,10 @@ public class ApplicationInitConfig {
           if(accountRepository.findByEmail("admin@chillshaker.com").isEmpty()) {
               Role adminRole = Role.builder().name(RoleEnum.ADMIN.name()).build();
               Role customerRole = Role.builder().name(RoleEnum.CUSTOMER.name()).build();
+              Role staffRole = Role.builder().name(RoleEnum.STAFF.name()).build();
+
               Collection<Role> adminRoles = new HashSet<>();
               adminRoles.add(adminRole);
-
               Account adminAccount = Account
                       .builder()
                       .email("admin@chillshaker.com")
@@ -56,7 +57,7 @@ public class ApplicationInitConfig {
               customerRoles.add(customerRole);
               Account customer1Account = Account
                       .builder()
-                      .email("customer1@gmail.com")
+                      .email("chillshakertest@tempumail.show")
                       .password(passwordEncoder.encode("string"))
                       .fullName("customer1")
                       .phone("0987654321")
@@ -66,9 +67,20 @@ public class ApplicationInitConfig {
                       .status(AccountStatusEnum.ACTIVE)
                       .build();
 
+              Collection<Role> staffRoles = new HashSet<>();
+              staffRoles.add(staffRole);
+              Account staffAccount = Account
+                      .builder()
+                      .email("staff@chillshaker.com")
+                      .password(passwordEncoder.encode("string"))
+                      .roles(staffRoles)
+                      .status(AccountStatusEnum.ACTIVE)
+                      .build();
+
               var accounts = new ArrayList<Account>();
               accounts.add(customer1Account);
               accounts.add(adminAccount);
+              accounts.add(staffAccount);
 
               accountRepository.saveAll(accounts);
               log.warn("Admin account created with email: admin@chillshaker.com and password: admin, please change it");

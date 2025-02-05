@@ -9,6 +9,8 @@ import com.ducnt.chillshaker.exception.ErrorResponse;
 import com.ducnt.chillshaker.exception.NotFoundException;
 import com.ducnt.chillshaker.model.*;
 import com.ducnt.chillshaker.repository.PaymentRepository;
+import com.ducnt.chillshaker.service.interfaces.IEmailService;
+import com.ducnt.chillshaker.service.interfaces.IRedisService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,12 +32,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class VNPayService {
+public class VNPayService implements com.ducnt.chillshaker.service.interfaces.IVNPayService {
     PaymentRepository paymentRepository;
     EntityManager entityManager;
     Environment environment;
-    RedisService redisService;
+    IRedisService redisService;
+    IEmailService emailService;
 
+    @Override
     @Transactional
     public String getVnpayPaymentLink(UUID bookingId, UUID accountId, double totalPrice,
                                       HttpServletRequest servletRequest) {
@@ -78,6 +82,7 @@ public class VNPayService {
         }
     }
 
+    @Override
     @Transactional
     public boolean processPaymentReturn(VNPayResponse vnPayResponse) {
         try {
@@ -101,6 +106,7 @@ public class VNPayService {
                 payment.setTransactionCode(vnPayResponse.getVnp_TransactionNo());
                 payment.setProviderName(vnPayResponse.getVnp_BankCode());
                 paymentRepository.save(payment);
+                emailService.sendPaymentInfo(payment);
                 return true;
             } else {
                 throw new NoSuchAlgorithmException();
