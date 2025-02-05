@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   spring-app:
-    build: .
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     container_name: spring-boot-app
     ports:
       - "8080:8080"
