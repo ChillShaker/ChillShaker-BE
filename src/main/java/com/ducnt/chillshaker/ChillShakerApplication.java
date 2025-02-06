@@ -33,12 +33,14 @@ public class ChillShakerApplication {
         System.setProperty("PAYMENT_ERROR_RETURN_URL", dotenv.get("PAYMENT_ERROR_RETURN_URL"));
 
         System.setProperty("SPRING_MAIL_HOST", dotenv.get("SPRING_MAIL_HOST"));
+        System.setProperty("SPRING_MAIL_PORT", dotenv.get("SPRING_MAIL_PORT"));
         System.setProperty("SPRING_MAIL_PROTOCOL", dotenv.get("SPRING_MAIL_PROTOCOL"));
         System.setProperty("SPRING_MAIL_USERNAME", dotenv.get("SPRING_MAIL_USERNAME"));
         System.setProperty("SPRING_MAIL_PASSWORD", dotenv.get("SPRING_MAIL_PASSWORD"));
 
-        System.setProperty("SPRING_REDIS_HOST", dotenv.get("SPRING_REDIS_HOST"));
-        System.setProperty("SPRING_REDIS_PORT", dotenv.get("SPRING_REDIS_PORT"));
+        System.setProperty("SPRING_DATA_REDIS_HOST", dotenv.get("SPRING_DATA_REDIS_HOST"));
+        System.setProperty("SPRING_DATA_REDIS_PORT", dotenv.get("SPRING_DATA_REDIS_PORT"));
+        System.setProperty("SPRING_REDIS_TIMEOUT", dotenv.get("SPRING_REDIS_TIMEOUT"));
 
         SpringApplication.run(ChillShakerApplication.class, args);
     }
